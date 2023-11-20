@@ -1,10 +1,10 @@
-# Authentication and Authorization Service
+# Notification Service
 
-The Authentication and Authorization Service is a centralized solution designed to manage authentication and authorization for all microservices within the system. This service, built using Python Flask, plays a crucial role in issuing and validating access tokens.
+The Notification Service is a versatile communication tool built to handle communication between different services for sending notifications. Developed using Python Flask, it seamlessly integrates with external notification providers such as email and SMS.
 
 ## Getting Started
 
-Follow these instructions to set up and run the Authentication and Authorization Service on your local machine.
+Follow these instructions to set up and run the Notification Service on your local machine.
 
 ### Prerequisites
 
@@ -17,8 +17,8 @@ Follow these instructions to set up and run the Authentication and Authorization
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-username/auth-service.git
-   cd auth-service
+   git clone https://github.com/your-username/notification-service.git
+   cd notification-service
 2. Install Python dependencies:
    ```bash
    pip install -r requirements.txt
