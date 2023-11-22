@@ -20,7 +20,7 @@ def create_app():
     # Initialize APIFairy, Marshmallow, and Socketio
     apifairy.init_app(app)
     ma.init_app(app)
-    socketio.init_app(app)
+    # socketio.init_app(app)
     db = client.flask_db
     todos = db.todos  
     # Register the notification blueprint
