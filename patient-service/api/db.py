@@ -4,9 +4,14 @@ from flask_dotenv import DotEnv
 
 DotEnv()
 
-mongodb_uri = os.getenv("MONGODB_URI")
+mongodb_uri = "mongodb+srv://ali:ali@aslan.im1wsjq.mongodb.net/"
 
-client = MongoClient(mongodb_uri)
-db = client.flask_db
-todos = db.todos
+
+try:
+    client = MongoClient(mongodb_uri)
+    db = client.Patients
+    users = db.users
+    print("Connected to the database.")
+except Exception as e:
+    print(f"Error connecting to the database: {e}")
 
