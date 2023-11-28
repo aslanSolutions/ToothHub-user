@@ -22,7 +22,7 @@ class AuthedUser:
 
     @classmethod
     def find_by_email(cls, email, collection):
-        return collection.find_one({"email": email})
+        return collection.find_one({"email": email}),
 
     @staticmethod
     def check_password(password, password_hash):
