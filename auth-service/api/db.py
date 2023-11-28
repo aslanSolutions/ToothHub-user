@@ -1,7 +1,7 @@
-from mongoengine import connect
 
-# Update the connection URL with your actual database details
-connection_url = 'mongodb+srv://dbUser:root123@aslan.im1wsjq.mongodb.net/patient'
+from pymongo import MongoClient
 
-# Establish the connection
-connect(host=connection_url)
+mongodb_uri = "mongodb+srv://ali:ali@aslan.im1wsjq.mongodb.net/Authentication"
+client = MongoClient(mongodb_uri)
+db = client.Authentication
+authed_collection = db.authed

@@ -12,7 +12,7 @@ def create_app():
     jwt = JWTManager(app)
 
     # Connect to MongoDB
-    connection_url = 'mongodb+srv://dbUser:root123@aslan.im1wsjq.mongodb.net/patient'
+    connection_url = 'mongodb+srv://ali:ali@aslan.im1wsjq.mongodb.net/Authentication'
     connect(host=connection_url)
     
     # Register blueprints

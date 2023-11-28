@@ -1,7 +1,40 @@
 from flask import jsonify
+from flask_jwt_extended import create_access_token
 import bcrypt
-from flask_jwt_extended import JWTManager, create_access_token
+from pymongo import MongoClient
 
+# Setup MongoDB connection
+mongodb_uri = "mongodb+srv://ali:ali@aslan.im1wsjq.mongodb.net/Authentication"  # Replace with your MongoDB URI
+client = MongoClient(mongodb_uri)
+db = client.Authentication
+authed_collection = db.authed  # Assuming 'authed' is your collection name
+
+class AuthedUser:
+    def __init__(self, username, email, password, user_type):
+        self.username = username
+        self.email = email
+        self.password_hash = self.set_password(password)
+        self.type = user_type
+
+    def set_password(self, password):
+        return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+    def save(self):
+        user_data = {
+            "username": self.username,
+            "email": self.email,
+            "password_hash": self.password_hash,
+            "type": self.type
+        }
+        return authed_collection.insert_one(user_data)
+
+    @classmethod
+    def find_by_email(cls, email):
+        return authed_collection.find_one({"email": email})
+
+    @staticmethod
+    def check_password(password, password_hash):
+        return bcrypt.checkpw(password.encode('utf-8'), password_hash.encode('utf-8'))
 
 def register_user(data):
     # Validate data
@@ -9,30 +42,25 @@ def register_user(data):
         return jsonify({'error': 'Missing data'}), 400
 
     # Check if user already exists
-    if User.objects(email=data['email']).first():
+    if AuthedUser.find_by_email(data['email']):
         return jsonify({'error': 'Email already exists'}), 400
-
-    # Hash the password
-    hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
 
     # Create new user
     try:
-        new_user = User(
-            first_name=data['first_name'],
-            last_name=data['last_name'],
-            email=data['email']
+        new_user = AuthedUser(
+            username=data['username'],
+            email=data['email'],
+            password=data['password'],
+            user_type=data['type']
         )
-        new_user.set_password(data['password'])
         new_user.save()
-        new_user.save()
-        
-        #create JWT token
-        access_token = create_access_token(identity=new_user.email)
 
+        # Create JWT token
+        access_token = create_access_token(identity=new_user.email)
         return jsonify({'message': 'User registered successfully', 'access_token': access_token}), 201
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
 
 def login_user(data):
     # Validate data
@@ -40,12 +68,12 @@ def login_user(data):
         return jsonify({'error': 'Missing email or password'}), 400
 
     # Retrieve user from database
-    user = User.objects(email=data['email']).first()
-    if not user:
+    user_data = AuthedUser.find_by_email(data['email'])
+    if not user_data:
         return jsonify({'error': 'Invalid email or password'}), 401
 
     # Check if the password matches
-    if bcrypt.checkpw(data['password'].encode('utf-8'), user.password_hash.encode('utf-8')):
+    if AuthedUser.check_password(data['password'], user_data['password_hash']):
         # Password matches, create JWT token and login successful
         access_token = create_access_token(identity=data['email'])
         return jsonify(access_token=access_token), 200
