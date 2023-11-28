@@ -1,7 +1,7 @@
 <template>
   <main class="dashboard-page">
     <div class="dashboard-t">
-      <h1 class="text-4xl md:text-4xl leading-24 md:leading-32 font-inter font-bold tracking-tighter text-blue-600 dark:text-blue-400">
+      <h1 class="text-4xl md:text-4xl leading-24 md:leading-32 font-inter font-bold tracking-tighter text-cyan-800 dark:text-cyan-600">
         Dashboard
       </h1>
       <p>{{ currentDate }}</p>
@@ -47,6 +47,7 @@ export default {
 .flex-container {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 }
 
 :root {
@@ -96,7 +97,7 @@ button {
   color: #4987A1;
   display: flex;
   flex-direction: column;
-  margin-left: 1%;
+  margin-left: 0;
 }
 
 
