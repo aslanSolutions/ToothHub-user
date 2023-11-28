@@ -2,39 +2,15 @@ from flask import jsonify
 from flask_jwt_extended import create_access_token
 import bcrypt
 from pymongo import MongoClient
+from user_model import AuthedUser
 
 # Setup MongoDB connection
-mongodb_uri = "mongodb+srv://ali:ali@aslan.im1wsjq.mongodb.net/Authentication"  # Replace with your MongoDB URI
+mongodb_uri = "mongodb+srv://ali:ali@aslan.im1wsjq.mongodb.net/Authentication"  
 client = MongoClient(mongodb_uri)
 db = client.Authentication
-authed_collection = db.authed  # Assuming 'authed' is your collection name
+authed_collection = db.authed 
 
-class AuthedUser:
-    def __init__(self, username, email, password, user_type):
-        self.username = username
-        self.email = email
-        self.password_hash = self.set_password(password)
-        self.type = user_type
 
-    def set_password(self, password):
-        return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-
-    def save(self):
-        user_data = {
-            "username": self.username,
-            "email": self.email,
-            "password_hash": self.password_hash,
-            "type": self.type
-        }
-        return authed_collection.insert_one(user_data)
-
-    @classmethod
-    def find_by_email(cls, email):
-        return authed_collection.find_one({"email": email})
-
-    @staticmethod
-    def check_password(password, password_hash):
-        return bcrypt.checkpw(password.encode('utf-8'), password_hash.encode('utf-8'))
 
 def register_user(data):
     # Validate data
@@ -51,7 +27,7 @@ def register_user(data):
             username=data['username'],
             email=data['email'],
             password=data['password'],
-            user_type=data['type']
+            type=data['type']
         )
         new_user.save()
 
