@@ -1,11 +1,11 @@
 import bcrypt
 
 class AuthedUser:
-    def __init__(self, username, email, password, user_type, collection):
+    def __init__(self, username, email, password, type, collection):
         self.username = username
         self.email = email
         self.password_hash = self.set_password(password)
-        self.type = user_type
+        self.type = type
         self.collection = collection
 
     def set_password(self, password):
@@ -22,7 +22,7 @@ class AuthedUser:
 
     @classmethod
     def find_by_email(cls, email, collection):
-        return collection.find_one({"email": email}),
+        return collection.find_one({"email": email})
 
     @staticmethod
     def check_password(password, password_hash):

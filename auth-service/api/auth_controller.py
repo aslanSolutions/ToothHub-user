@@ -2,14 +2,17 @@ from flask import jsonify
 from flask_jwt_extended import create_access_token
 import bcrypt
 from pymongo import MongoClient
-from user_model import AuthedUser
+from .user_model import AuthedUser
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Setup MongoDB connection
-mongodb_uri = "mongodb+srv://ali:ali@aslan.im1wsjq.mongodb.net/Authentication"  
+mongodb_uri = os.getenv("MONGODB_URI")
 client = MongoClient(mongodb_uri)
 db = client.Authentication
-authed_collection = db.authed 
-
+authed_collection = db.authed
 
 
 def register_user(data):
@@ -18,7 +21,7 @@ def register_user(data):
         return jsonify({'error': 'Missing data'}), 400
 
     # Check if user already exists
-    if AuthedUser.find_by_email(data['email']):
+    if AuthedUser.find_by_email(data['email'], authed_collection):
         return jsonify({'error': 'Email already exists'}), 400
 
     # Create new user
@@ -27,7 +30,8 @@ def register_user(data):
             username=data['username'],
             email=data['email'],
             password=data['password'],
-            type=data['type']
+            type=data['type'],
+            collection=authed_collection
         )
         new_user.save()
 
@@ -44,7 +48,7 @@ def login_user(data):
         return jsonify({'error': 'Missing email or password'}), 400
 
     # Retrieve user from database
-    user_data = AuthedUser.find_by_email(data['email'])
+    user_data = AuthedUser.find_by_email(data['email'], authed_collection)
     if not user_data:
         return jsonify({'error': 'Invalid email or password'}), 401
 
