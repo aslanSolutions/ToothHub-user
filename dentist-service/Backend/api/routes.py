@@ -5,7 +5,7 @@ from .db import todos
 
 bp = Blueprint('dentist', __name__, url_prefix='/dentist')
 
-dentists_collection = todos['dentists'] 
+dentist_collection = todos['Dentist'] 
 
 dentistSchema = DentistSchema()
 
@@ -44,7 +44,7 @@ def create_dentist():
 @response(dentistSchema, 200)
 def get_all_dentist():
     # Retrieve all dentsit list
-    all_dentists = list(dentists_collection.find({}))
+    all_dentists = list(dentist_collection.find({}))
     return all_dentists
 
 
@@ -86,6 +86,6 @@ def delete_dentist(dentist_id):
 @bp.route('/delete_all', methods=['DELETE'])
 def delete_all_dentists():
     # Delete all dentists from the collection
-    result = dentists_collection.delete_many({})
+    result = dentist_collection.delete_many({})
     return jsonify({"message": f"{result.deleted_count} dentists deleted"}), 200
     
