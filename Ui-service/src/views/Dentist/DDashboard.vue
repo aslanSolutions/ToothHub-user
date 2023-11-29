@@ -8,16 +8,23 @@
         </h1>
         <p>{{ currentDate }}</p>
       </div>
+      <DentistImg />
+      <VueDatePicker v-model="date" position= "left"></VueDatePicker>
+      <TodaysApp />
     </div>
   </div>
 </template>
 
 <script>
 import DSidebar from '../../components/Dentist/Dashboard/Dsidebar.vue';
+import DentistImg from '../../components/Dentist/Dashboard/DentistImg.vue'
+import VueDatePicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
+import TodaysApp from '../../components/Dentist/Dashboard/TodaysApp.vue'
 
 export default {
   components: {
-    DSidebar,
+    DSidebar,DentistImg,VueDatePicker,TodaysApp,
   },
   data() {
     return {
@@ -40,11 +47,12 @@ export default {
 <style lang="scss" scoped>
 .dentist-dashboard {
   display: flex;
+  min-height: 100vh;
 }
 
 .Dsidebar {
   display: block;
-  height: 90rem;
+  height: 100%;
   width: 20rem;
   background: #4987A2;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
@@ -53,18 +61,9 @@ export default {
 
 .flex-container {
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
-  /* Add additional styling for the flex container if needed */
 }
 
-/* Add your scoped styles for .dentist-t here */
-.dentist-t {
-  /* Your styles for the text container */
-}
 
-/* Adjust styles for DSidebar and its icons if needed */
-.logo {
-  max-width: 100%;
-  height: auto;
-}
 </style>
