@@ -1,19 +1,10 @@
 from flask import jsonify
 from flask_jwt_extended import create_access_token
-import bcrypt
 from pymongo import MongoClient
 from .user_model import AuthedUser
 import os
 from dotenv import load_dotenv
-
-load_dotenv()
-
-# Setup MongoDB connection
-mongodb_uri = os.getenv("MONGODB_URI")
-client = MongoClient(mongodb_uri)
-db = client.Authentication
-authed_collection = db.authed
-
+from .db import authed_collection
 
 def register_user(data):
     # Validate data
