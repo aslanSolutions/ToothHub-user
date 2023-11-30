@@ -1,7 +1,7 @@
 from flask import jsonify
-from flask_jwt_extended import create_access_token
-from pymongo import MongoClient
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from .user_model import AuthedUser
+
 import os
 from dotenv import load_dotenv
 from .db import authed_collection
@@ -32,6 +32,16 @@ def register_user(data):
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
+def validate_user():
+    # Get the identity of the current user (based on the JWT token)
+    current_user = get_jwt_identity()
+    if current_user:
+        return jsonify({"message": "Token is valid", "user": current_user}), 200
+    else:
+        return jsonify({"message": "Invalid token"}), 401
+    
 
 def login_user(data):
     # Validate data
@@ -51,3 +61,5 @@ def login_user(data):
     else:
         # Password does not match
         return jsonify({'error': 'Invalid email or password'}), 401
+    
+    
