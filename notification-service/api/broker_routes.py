@@ -1,39 +1,18 @@
 import json
 from .mqtt import mqtt_client
 
-topic = "notification"
-
-def publishGetNots():
-    payload = {"method": "GET"}
-    try:
-        mqtt_client.publish(topic, payload)
-        return json({'Request send successfully': str(e)}), 200
-    except Exception as e:
-        return json({'error': str(e)}), 500
-    
-
-def publishGetNot(payload):
-    payload["method"] = "GETOne"
-    try:
-        mqtt_client.publish(topic, json.dumps(payload))
-        return json({'Request send successfully': str(e)}), 200
-    except Exception as e:
-        return json({'error': str(e)}), 500
-
-
 def publishPostNot(payload):
-    payload["method"] = "POST"
     try:
-        mqtt_client.publish(topic, json.dumps(payload))
+        mqtt_client.publish(payload.sender, json.dumps(payload))
         return json({'Request send successfully': str(e)}), 201
     except Exception as e:
         return json({'error': str(e)}), 500
 
 
-def publishDeleteNot(payload):
-    payload["method"] = "DELETE"
+def on_message(client, userdata, msg): # Just printing the message resived for now.
     try:
-        mqtt_client.publish(topic, json.dumps(payload))
-        return json({'Request send successfully': str(e)}), 200
-    except Exception as e:
-        return json({'error': str(e)}), 500
+        print("Message resived: ", msg.topic ,", ",msg.payload.decode("utf-8"))
+    except json.JSONDecodeError as e:
+        print("Error decoding JSON:", e)
+
+mqtt_client.on_message = on_message
