@@ -13,9 +13,10 @@
     "@tailwindcss/typography": "^0.5.10",
     "core-js": "^3.8.3",
     "sass": "^1.69.5",
-    "vue": "^3.3.8",
+    "vue": "^3.3.9",
     "vue-resource": "^1.5.3",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

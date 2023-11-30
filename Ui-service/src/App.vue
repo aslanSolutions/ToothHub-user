@@ -1,18 +1,14 @@
 <template>
-<div class="app">
-  <Sidebar />
-  <router-view/>
-</div>
+  <div id="app" class="app">
+    <router-view name="sidebar"></router-view>
+    <router-view name="navbar"></router-view>
+    <router-view/>
+  </div>
 </template>
 
 <script setup>
-import Sidebar from './components/Sidebar.vue'
-
-
 </script>
 
 <style lang="scss">
-
-
-
+/* Your styles here */
 </style>

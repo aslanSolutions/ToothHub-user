@@ -5,38 +5,66 @@ import Dentists from '../views/Dentists.vue';
 import Patients from '../views/Patients.vue';
 import Revenue from '../views/Revenue.vue';
 import Settings from '../views/Settings.vue';
+import Home from '../views/Home.vue';
+import Sidebar from '../components/Sidebar.vue';
+import Navbar from '../components/Shared/navbar/navbar.vue';
 
 const routes = [
   {
     path: '/',
+    name: 'Home',
+    components: {
+      default: Home,
+      navbar: Navbar
+    },
+  },
+  {
+    path: '/Dashboard',
     name: 'Dashboard',
-    component: Dashboard,
+    components: {
+      default: Dashboard,
+      sidebar: Sidebar,
+    },
   },
   {
     path: '/Appointments',
     name: 'Appointments',
-    component: Appointments,
+    components: {
+      default: Appointments,
+      sidebar: Sidebar,
+    },
   },
   {
     path: '/Dentists',
     name: 'Dentists',
-    component: Dentists,
+    components: {
+      default: Dentists,
+      sidebar: Sidebar,
+    },
   },
   {
     path: '/Patients',
     name: 'Patients',
-    component: Patients,
+    components: {
+      default: Patients,
+      sidebar: Sidebar,
+    },
   },
   {
     path: '/Revenue',
     name: 'Revenue',
-    component: Revenue,
+    components: {
+      default: Revenue,
+      sidebar: Sidebar,
+    },
   },
   {
-
     path: '/Settings',
     name: 'Settings',
-    component: Settings,
+    components: {
+      default: Settings,
+      sidebar: Sidebar,
+    },
   },
 ];
 
@@ -45,4 +73,4 @@ const router = createRouter({
   routes,
 });
 
-export default router
+export default router;
