@@ -1,8 +1,6 @@
 from flask import jsonify
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from .user_model import AuthedUser
-
-import os
 from dotenv import load_dotenv
 from .db import authed_collection
 
@@ -34,6 +32,7 @@ def register_user(data):
         return jsonify({'error': str(e)}), 500
     
 
+#Checks if the user is legit
 def validate_user():
     # Get the identity of the current user (based on the JWT token)
     current_user = get_jwt_identity()
