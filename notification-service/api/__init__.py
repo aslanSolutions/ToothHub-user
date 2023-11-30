@@ -2,27 +2,22 @@ from flask import Flask
 from apifairy import APIFairy
 from flask_marshmallow import Marshmallow
 from .routes import bp as notification_bp
-from .mqtt import mqtt_client, socketio
-from pymongo import MongoClient
-client = MongoClient('localhost', 27017)
-
-apifairy = APIFairy()
-ma = Marshmallow()
+from .mqtt import mqtt_client
+from .marsh_schema import ma
 
 brokerAdress = "0169ad6feac84c25b5b11b5157be1bd8.s2.eu.hivemq.cloud"
 brokerPort = 8883
 
 def create_app():
+    apifairy = APIFairy()
     app = Flask(__name__)
     app.config['APIFAIRY_TITLE'] = 'Notification API'
     app.config['APIFAIRY_VERSION'] = '1.0'
 
-    # Initialize APIFairy, Marshmallow, and Socketio
+    # Initialize APIFairy, Marshmallow
     apifairy.init_app(app)
     ma.init_app(app)
-    # socketio.init_app(app)
-    db = client.flask_db
-    todos = db.todos  
+
     # Register the notification blueprint
     app.register_blueprint(notification_bp)
 
