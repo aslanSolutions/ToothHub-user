@@ -1,8 +1,8 @@
 <template>
-  <div class="group">
-    <div class="appointments">
-      Today’s Appointments
-    </div>
+    <div class="dentist-t">
+      <h1 class="text-3xl md:text-3xl leading-24 md:leading-32 font-inter font-semibold tracking-tighter text-cyan-800 dark:text-cyan-600">
+        Today’s Appointments 
+      </h1>
 
     <div class="group">
       <div class="image-text-container">
@@ -42,7 +42,8 @@
 <style lang="scss" scoped>
 .square-container {
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
+  margin: 1rem;
 }
 
 .flex-container {

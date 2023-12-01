@@ -9,7 +9,7 @@
         <p>{{ currentDate }}</p>
       </div>
       <DentistImg />
-      <VueDatePicker v-model="date" position= "left"></VueDatePicker>
+      <Qalendar />
       <TodaysApp />
     </div>
   </div>
@@ -18,13 +18,12 @@
 <script>
 import DSidebar from '../../components/Dentist/Dashboard/Dsidebar.vue';
 import DentistImg from '../../components/Dentist/Dashboard/DentistImg.vue'
-import VueDatePicker from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css'
+import Qalendar from '../../components/Dentist/Dashboard/Qalendar.vue'
 import TodaysApp from '../../components/Dentist/Dashboard/TodaysApp.vue'
 
 export default {
   components: {
-    DSidebar,DentistImg,VueDatePicker,TodaysApp,
+    DSidebar, DentistImg, Qalendar, TodaysApp,
   },
   data() {
     return {
@@ -65,5 +64,25 @@ export default {
   flex-direction: column;
 }
 
+.dentist-t {
+}
 
+.DentistImg {
+  flex-shrink: 0;
+  max-width: 80%;
+}
+
+@media screen and (max-width: 768px) {
+  .dentist-dashboard {
+    flex-direction: column;
+  }
+
+  .Dsidebar {
+    width: 100%;
+  }
+
+  .DentistImg {
+    order: -1;
+  }
+}
 </style>

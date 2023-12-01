@@ -28,6 +28,8 @@
 </template>
 
 <script>
+export default {
+};
 </script>
 
 <style lang="scss">
@@ -39,6 +41,9 @@
   background: #4987A2;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
   align-items: center;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
 }
 
 .text-container {
@@ -107,5 +112,15 @@
   font-weight: 500;
   font-size: 20px;
   color: #FFFFFF;
+}
+
+@media screen and (max-width: 768px) {
+  .Dsidebar {
+    height: auto;
   }
+
+  .icon-container {
+    margin-top: 2rem;
+  }
+}
 </style>
