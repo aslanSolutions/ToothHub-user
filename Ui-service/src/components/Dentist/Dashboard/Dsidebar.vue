@@ -95,6 +95,10 @@ export default {
   gap: 1.5rem;
   transition: background-color 0.3s ease;
 }
+.icon:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+}
 
 .icon-img {
   max-width: 30px;

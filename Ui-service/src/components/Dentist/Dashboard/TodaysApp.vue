@@ -6,8 +6,6 @@
 
     <div class="group">
       <div class="square-container">
-
-        <!-- First Div Group -->
         <div class="square">
           <div class="flex-container">
             <div class="ellipse" id="ellipse806"></div>
@@ -34,8 +32,6 @@
             <button class="view-details-btn">View Details</button>
           </div>
         </div>
-
-        <!-- Second Div Group -->
         <div class="square">
           <div class="flex-container">
             <div class="ellipse" id="ellipse807"></div>
@@ -62,8 +58,6 @@
             <button class="view-details-btn">View Details</button>
           </div>
         </div>
-
-        <!-- Third Div Group -->
         <div class="square">
           <div class="flex-container">
             <div class="ellipse" id="ellipse808"></div>
@@ -128,6 +122,10 @@
     color: #fff;
     margin-top: 1rem;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .view-details-btn:hover {
+    background-color: #346e8a;
   }
 
   .square {
@@ -135,7 +133,7 @@
     height: auto;
     border: 0.5px solid rgba(163, 163, 163, 0.05);
     border-radius: 1.5rem;
-    margin-right: 1rem; /* Adjust as needed for spacing between squares */
+    margin-right: 1rem;
   }
 
   .ellipse {
