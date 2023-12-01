@@ -15,12 +15,12 @@
       </div>
 
       <div class="icon">
-        <img src="../../../assets/AppIcon.png" alt="Appointments Icon" class="icon-img" />
+        <img src="../../../assets/AppIcon1.png" alt="Appointments Icon" class="icon-img" />
         <h1 class="icon-text">Appointments</h1>
       </div>
 
       <div class="icon">
-        <img src="../../../assets/SetIcon.png" alt="Settings Icon" class="icon-img" />
+        <img src="../../../assets/SetIcon1.png" alt="Settings Icon" class="icon-img" />
         <h1 class="icon-text">Settings</h1>
       </div>
     </div>
@@ -34,9 +34,9 @@ export default {
 
 <style lang="scss">
 .Dsidebar {
-  width: 300px;  // Set a fixed width
+  width: 300px;
   background: #4987A2;
-  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
   align-items: center;
   position: sticky;
   top: 0;
@@ -46,9 +46,7 @@ export default {
 .text-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-top: 4rem;
-  margin-left: 1%;
+  margin-left: .2rem;
 }
 
 .custom-h1 {
@@ -57,8 +55,8 @@ export default {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 700;
-  font-size: 34px;
-  line-height: 102px;
+  font-size: 30px;
+  line-height: 100px;
   color: #FFFFFF;
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   margin-bottom: -2rem;
@@ -73,12 +71,12 @@ export default {
 .custom-p {
   font-family: 'Inter';
   font-style: light;
-  font-weight: 100;
-  font-size: 15px;
+  font-weight: 300;
+  font-size: 13px;
   text-align: center;
-  color: #000000;
-  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
-  margin-left: 2.5rem;
+  color: #1e1e1e;
+  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
+  margin-left: 1.5rem;
 }
 
 .icon-container {
@@ -113,7 +111,7 @@ export default {
 
 @media screen and (max-width: 768px) {
   .Dsidebar {
-    width: 100%;  // Make it full width in responsive mode
+    width: 100%;
   }
 }
 </style>

@@ -15,7 +15,12 @@ import RightBar from './components/Dentist/Dashboard/RightBar.vue';
 
 
 .app{
-  overflow: hidden;
+  display: flex;
+  min-height: 100vh;
+}
+
+.content-wrapper {
+  flex: 1;
 }
 
 /* Dsidebar styles */
@@ -38,7 +43,6 @@ import RightBar from './components/Dentist/Dashboard/RightBar.vue';
   display: flex;
   flex-direction: column;
 
-  /* Add any additional styles as needed */
 }
 
 </style>

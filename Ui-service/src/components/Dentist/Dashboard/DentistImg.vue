@@ -11,8 +11,4 @@
 
 <style lang="scss">
 
-.dentist-img{
-    padding: 0.5rem;
-}
-
 </style>
