@@ -34,10 +34,7 @@ export default {
 
 <style lang="scss">
 .Dsidebar {
-  display: flex;
-  flex-direction: column;
-  height: 30rem;
-  width: 20rem;
+  width: 300px;  // Set a fixed width
   background: #4987A2;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
   align-items: center;
@@ -116,11 +113,7 @@ export default {
 
 @media screen and (max-width: 768px) {
   .Dsidebar {
-    height: auto;
-  }
-
-  .icon-container {
-    margin-top: 2rem;
+    width: 100%;  // Make it full width in responsive mode
   }
 }
 </style>
