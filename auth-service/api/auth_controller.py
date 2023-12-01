@@ -33,7 +33,9 @@ def register_user(data):
     
 
 #Checks if the user is legit
-def validate_user():
+# Function to check if the user is legitimate
+# Function to check if the user is legitimate
+def is_user_valid():
     # Get the identity of the current user (based on the JWT token)
     current_user = get_jwt_identity()
     if current_user:
