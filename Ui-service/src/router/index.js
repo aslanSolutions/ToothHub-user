@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import DDashboard from '../views/Dentist/DDashboard.vue';
 import Dashboard from '../views/Dashboard.vue';
 import Appointments from '../views/Appointments.vue';
 import Dentists from '../views/Dentists.vue';
@@ -10,6 +11,13 @@ import Sidebar from '../components/Sidebar.vue';
 import Navbar from '../components/Shared/navbar/navbar.vue';
 
 const routes = [
+
+  {
+    path: '/Dashboard',
+    name: 'DDashboard',
+    component: DDashboard,
+  },
+  
   {
     path: '/',
     name: 'Home',
