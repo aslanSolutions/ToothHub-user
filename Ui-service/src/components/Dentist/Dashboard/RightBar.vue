@@ -8,14 +8,12 @@
         </div>
       </div>
     </div>
-    
     <div class="girl-ellipse-container">
       <div class="girl-ellipse">
-        <img src="../../../assets/girlimage.png" alt="Person Image" class="person-img" />
+        <img src="../../../assets/girlimage.png" alt="girl Image" class="girl-img" />
         <p class="person-name">Dr. Sarah</p>
       </div>
     </div>
-
     <div class="Latest-Patient">
       <div class="latest-patient-heading">
         <h2>Latest Patient</h2>
@@ -25,7 +23,6 @@
         <h2>View All</h2>
       </div>
     </div>
-
     <div class="man-ellipse-container">
       <div class="man-ellipse">
         <div class="patient-info">
@@ -53,11 +50,9 @@
 export default {
   methods: {
     logout() {
-      // Add your logout logic here
       console.log("Logging out...");
     },
     viewAllPatients() {
-      // Add your logic for viewing all patients
       console.log("Viewing all patients...");
   },
 }
@@ -66,6 +61,10 @@ export default {
 
 <style lang="scss" scoped>
 
+
+.girl-img{
+  width: 10rem;
+}
 .person-text{
   display: flex;
   flex-direction: row;
@@ -89,7 +88,7 @@ export default {
   font-family: 'Inter';
   font-weight: 500;
   color: #ffffff;
-  margin-right: 1rem; /* Adjust margin as needed */
+  margin-right: 1rem;
 }
 
 .icon-container {
@@ -105,7 +104,7 @@ export default {
 
 .girl-ellipse-container {
   display: flex;
-  justify-content: center; /* Updated to center the girl-ellipse */
+  justify-content: center;
   align-items: center;
   margin-top: 8rem;
 }
@@ -117,7 +116,7 @@ export default {
 }
 
 .person-img {
-  width: 5rem;
+  width: 4rem;
   height: auto;
   border-radius: 70px;
 }
@@ -142,13 +141,13 @@ export default {
 
 .latest-patient-heading {
   display: flex;
-  flex: 1; /* Adjust the flex property as needed */
+  flex: 1;
 }
 
 .view-patient-heading {
   display: flex;
-  flex: 1; /* Adjust the flex property as needed */
-  justify-content: flex-end; /* Align to the end of the container */
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .man-ellipse-container {

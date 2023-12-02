@@ -10,15 +10,11 @@
       </div>
     </div>
   </template>
-  
   <style lang="scss" scoped>
-
-  
     .text-container {
       position: relative;
       transform: translate(5%, -350%);
-      text-align: center; /* Center text within the container */
+      text-align: center;
       width: 100%;
     }
   </style>
-  
