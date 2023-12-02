@@ -1,8 +1,6 @@
 <template>
-    <main class="home-page">
-    <div class="container">
+    <main class="home-page">>
         <headSec />
-    </div>
     </main>
 </template>
 
@@ -19,7 +17,4 @@
     padding: 0%;
 }
 
-.container {
-    padding-top: 20px;
-}
 </style>
