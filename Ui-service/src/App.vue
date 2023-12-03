@@ -23,7 +23,6 @@ import RightBar from './components/Dentist/Dashboard/RightBar.vue';
   flex: 1;
 }
 
-/* Dsidebar styles */
 .Dsidebar {
   flex: 0 0 300px;
   background: #4987A2;

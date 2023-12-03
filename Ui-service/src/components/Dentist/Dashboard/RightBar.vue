@@ -71,7 +71,7 @@ export default {
   color: white;
 }
 .right-sidebar {
-  width: 60rem;
+  width: 30rem;
   background: rgba(28, 53, 64, 0.56);
   opacity: 0.7;
   box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);

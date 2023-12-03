@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import DDashboard from '../views/Dentist/DDashboard.vue';
+import DAppointments from '../views/Dentist/DAppointments.vue'
 import Dashboard from '../views/Dashboard.vue';
-import Appointments from '../views/Appointments.vue';
 import Dentists from '../views/Dentists.vue';
 import Patients from '../views/Patients.vue';
 import Revenue from '../views/Revenue.vue';
@@ -22,8 +22,8 @@ const routes = [
   },
   {
     path: '/Appointments',
-    name: 'Appointments',
-    component: Appointments,
+    name: 'DAppointments',
+    component: DAppointments,
   },
   {
     path: '/Dentists',
