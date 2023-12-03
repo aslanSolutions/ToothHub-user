@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from .auth_controller import login_user, register_user
+from .auth_controller import login_user, register_user, is_user_valid
 from flask_jwt_extended import jwt_required
 
 
@@ -16,6 +16,10 @@ def login():
     data = request.json
     return login_user(data)
 
+@auth_blueprint.route('/validate', methods=['GET'])
+@jwt_required()
+def validate_user_route():
+    return is_user_valid()
 
 # Function to register the auth blueprint
 def register_auth_blueprint(app):
