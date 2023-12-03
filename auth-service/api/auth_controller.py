@@ -1,7 +1,6 @@
 from flask import jsonify
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from .user_model import AuthedUser
-from dotenv import load_dotenv
 from .db import authed_collection
 
 def register_user(data):

@@ -1,32 +1,61 @@
 <template>
-  <div id="app">
-    <!-- router-view will render the component based on the current route -->
-    <router-view></router-view>
+  <div id="app" class="app">
+    <!-- Navbar always on top -->
+    <router-view name="navbar" class="navbar"></router-view>
+    
+    <!-- Main content area with sidebar and the page content -->
+    <div class="content-area">
+      <!-- Sidebars -->
+      <router-view name="Sidebar" class="sidebar"></router-view>
+
+      <!-- Page content -->
+      <div class="content-wrapper">
+        <router-view></router-view>
+      </div>
+      <router-view name="Rightbar" class="right-sidebar"></router-view>
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'App'
-}
+<script setup>
+// Your script here
 </script>
 
-<style>
-html, body {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  height: 100%;
+<style lang="scss">
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  background-color: #f0f0f0; /* Set your desired background color here /
-  min-height: 100vh; / Ensure it covers the full height of the viewport */
-  box-sizing: border-box;
+.content-area {
+  display: flex;
+  flex: 1;
 }
+
+.sidebar{
+  flex: 0 0 300px;
+  background: #4987A2;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  border-radius: .1rem;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+
+}
+
+.content-wrapper {
+  flex: 1;
+}
+.right-sidebar {
+  background: rgba(28, 53, 64, 0.56);
+  opacity: 0.7;
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+  border-radius: .1rem;
+  display: flex;
+  flex-direction: column;
+
+}
+
 </style>
