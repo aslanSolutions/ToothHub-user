@@ -1,23 +1,41 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import DDashboard from '../views/Dentist/DDashboard.vue';
+import PDashboard from '../views/Patient/Dashboard.vue';
 import Dashboard from '../views/Dashboard.vue';
+
 import Appointments from '../views/Appointments.vue';
 import Dentists from '../views/Dentists.vue';
 import Patients from '../views/Patients.vue';
 import Revenue from '../views/Revenue.vue';
 import Settings from '../views/Settings.vue';
 import Home from '../views/Home.vue';
+// Navbar and sidebars 
 import Sidebar from '../components/Sidebar.vue';
+import Dsidebar from '../components/Dentist/Dashboard/Dsidebar.vue';
+import PSidebar from '../components/patinet/sidebar.vue';
 import Navbar from '../components/Shared/navbar/navbar.vue';
+import RightSidebar from '../components/Dentist/Dashboard/RightBar.vue';
 
 const routes = [
 
   {
-    path: '/Dashboard',
-    name: 'DDashboard',
-    component: DDashboard,
+    path: '/dentist-dashboard',
+    name: 'Dentist-Dashboard',
+    components: {
+      default: DDashboard,
+      Sidebar: Dsidebar,
+      Rightbar: RightSidebar
+    }
   },
-  
+  {
+    path: '/patient-dashboard',
+    name: 'Patient-Dashboard',
+    components: {
+      default: PDashboard,
+      Sidebar: PSidebar,
+      Rightbar: RightSidebar,
+    }
+  },  
   {
     path: '/',
     name: 'Home',
@@ -27,11 +45,12 @@ const routes = [
     },
   },
   {
-    path: '/Dashboard',
+    path: '/dashboard',
     name: 'Dashboard',
     components: {
       default: Dashboard,
-      sidebar: Sidebar,
+      Sidebar: Sidebar,
+      Rightbar: RightSidebar,
     },
   },
   {
