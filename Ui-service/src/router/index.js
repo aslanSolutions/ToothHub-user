@@ -1,14 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router';
+// Dashboard of users
 import DDashboard from '../views/Dentist/DDashboard.vue';
 import PDashboard from '../views/Patient/Dashboard.vue';
 import Dashboard from '../views/Dashboard.vue';
-
+// Pages
 import Appointments from '../views/Appointments.vue';
 import Dentists from '../views/Dentists.vue';
 import Patients from '../views/Patients.vue';
 import Revenue from '../views/Revenue.vue';
 import Settings from '../views/Settings.vue';
 import Home from '../views/Home.vue';
+import Login from '@/components/Shared/LoginForm.vue';
+import Register from '@/components/patinet/RegistrationForm.vue';
+
 // Navbar and sidebars 
 import Sidebar from '../components/Sidebar.vue';
 import Dsidebar from '../components/Dentist/Dashboard/Dsidebar.vue';
@@ -51,6 +55,22 @@ const routes = [
       default: Dashboard,
       Sidebar: Sidebar,
       Rightbar: RightSidebar,
+    },
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    components: {
+      default: Register,
+      navbar: Navbar
+    },
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    components: {
+      default: Login,
+      navbar: Navbar
     },
   },
   {

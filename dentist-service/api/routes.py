@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, make_response
 from apifairy import body, response
 from .schema import DentistSchema
 from .db import users
@@ -11,43 +11,48 @@ dentist_collection = users['Dentist']
 
 dentistSchema = DentistSchema()
 
-AUTH_SERVICE_URL = "http://localhost:5002"
+AUTH_SERVICE_URL = "http://localhost:5005"
 
-@bp.route('/register', methods=['POST'])
+@bp.route('/', methods=['POST'])
 def register_dentist():
-    # Create Dentist account
-    payload = request.get_json()
+    try:
+        # Create Dentist account
+        payload = request.get_json()
 
-    # Validate the payload against the schema
-    errors = dentistSchema.validate(payload)
-    if errors:
-        return jsonify({"message": "Validation error", "errors": errors}), 400
+        payload['type'] = 'Dentist'
+        # Validate the payload against the schema
+        errors = dentistSchema.validate(payload)
+        if errors:
+            return jsonify({"message": "Validation error", "errors": errors}), 400
 
-    # Make a registration request to the authentication service
-    auth_service_url = "http://127.0.0.1:5002/auth/register"  # Update with the correct URL
-    auth_payload = {
-        "username": payload["name"],  # Use relevant dentist information
-        "email": payload["email"],
-        "password": payload["password"]
-    }
+        # Make a registration request to the authentication service
+        auth_service_url = "http://127.0.0.1:5005/auth/register"  # Update with the correct URL
+        auth_payload = {
+            "username": payload["name"],  # Use relevant dentist information
+            "email": payload["email"],
+            "password": payload["password"],
+            "type": payload['type']
+        }
 
-    auth_response = requests.post(auth_service_url, json=auth_payload)
+        auth_response = requests.post(auth_service_url, json=auth_payload)
 
-    if auth_response.status_code == 201:
-        # If registration is successful in the authentication service,
-        # proceed with the dentist registration in our service.
-        result = users.insert_one(payload)
-        new_dentist_id = result.inserted_id
-        created_dentist = users.find_one({'_id': new_dentist_id})
+        if auth_response.status_code == 201:
+            result = users.insert_one(payload)
+            new_dentist_id = result.inserted_id
+            created_dentist = users.find_one({'_id': new_dentist_id})
 
-        # Convert ObjectId to string before returning the response
-        created_dentist['_id'] = str(created_dentist['_id'])
-
-        return jsonify(created_dentist), 201
-    else:
-        # Handle registration failure in the authentication service
-        print(f"Authentication service response: {auth_response.text}")
-        return jsonify({"message": "Dentist registration failed"}), 500
+            dentist_data = DentistSchema().dump(created_dentist)
+            response = make_response(jsonify(dentist_data), 201)
+            return response
+        else:
+            # Handle registration failure in the authentication service
+            print(f"Authentication service response: {auth_response.text}")
+            return jsonify({"message": "Dentist registration failed"}), 500
+    
+    except Exception as e:
+        print(f"Exception: {str(e)}")
+        return jsonify({"message": "An error occurred"}), 500
+    
 
 @bp.route('/<int:dentist_id>', methods=['GET'])
 @response(dentistSchema, 200)

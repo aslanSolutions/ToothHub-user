@@ -20,6 +20,10 @@
                         <input type="text" id="email" name="email" v-model="email">
                     </div>
                     <div class="input-group">
+                        <label for="phoneNumber">Phone Number</label>
+                        <input type="text" id="phoneNumber" name="phoneNumber" v-model="phoneNumber">
+                    </div>
+                    <div class="input-group">
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" v-model="password">
                     </div>
@@ -50,6 +54,7 @@ export default {
             firstName: '',
             lastName: '',
             email: '',
+            phoneNumber: '',
             password: '',
             confirmPassword: ''
         };
@@ -58,13 +63,13 @@ export default {
 
         async submitForm() {
             try {
-                const response = await axios.post('http://127.0.0.1:5000/auth/register', {
-                    first_name: this.firstName,
-                    last_name: this.lastName,
+                const payload = {
+                    name: this.firstName + ' ' + this.lastName,
                     email: this.email,
-                    password: this.password
-                });
-                console.log(response.data);
+                    password: this.password,
+                    phoneNumber: this.phoneNumber
+                };
+                await axios.post('http://127.0.0.1:5001/patient/', payload);
                 // Handle success
                 alert('Registration successful!'); // Replace with a more suitable success message or action
                 // Example: Redirect to a login page or a success page
@@ -104,6 +109,7 @@ export default {
     padding: 20px;
     height: 100vh;
     /* Adjust as needed */
+    margin-top: 5rem;
     transform: translateX(35%);
 }
 
@@ -214,4 +220,5 @@ p {
 
 .create input[type="submit"]:hover {
     background-color: #3b6d85;
-}</style>  
+}
+</style>  

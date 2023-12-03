@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, make_response
 from apifairy import body, response
 from .schema import PatientSchema
 from.db import users
@@ -12,40 +12,46 @@ patient_collection = users['Patient']
 
 patientSchema = PatientSchema()
 
-AUTH_SERVICE_URL = "http://localhost:5002"
+AUTH_SERVICE_URL = "http://localhost:5005/auth/"
 
 @bp.route('/', methods=['POST'])
-@response(patientSchema, 200)
 def create_patient():
-    payload = request.get_json()
+    try:
+        payload = request.get_json()
 
-    payload['type'] = 'Patient'
+        payload['type'] = 'Patient'
 
-    errors = patientSchema.validate(payload)
-    if errors:
-        return jsonify({"message": "Validation error", "errors": errors}), 400
+        errors = patientSchema.validate(payload)
+        if errors:
+            return jsonify({"message": "Validation error", "errors": errors}), 400
 
-    auth_service_url = "http://127.0.0.1:5002/auth/register" 
-    auth_payload = {
-        "username": payload["name"],
-        "email": payload["email"],
-        "password": payload["password"],
-        "type": payload['type']
-    }
 
-    auth_response = requests.post(auth_service_url, json=auth_payload)
+        auth_service_url = AUTH_SERVICE_URL + "/register" 
+        auth_payload = {
+            "username": payload["name"],
+            "email": payload["email"],
+            "password": payload["password"],
+            "type": payload["type"]
+        }
 
-    if auth_response.status_code == 201:
-        result = users.insert_one(payload)
-        new_patient_id = result.inserted_id
-        created_patient = users.find_one({'_id': new_patient_id})
+        auth_response = requests.post(auth_service_url, json=auth_payload)
 
-        created_patient['_id'] = str(created_patient['_id'])
+        if auth_response.status_code == 201:
+            result = users.insert_one(payload)
+            new_patient_id = result.inserted_id
+            created_patient = users.find_one({'_id': new_patient_id})
 
-        return jsonify(created_patient), 201
-    else:
-        print(f"Authentication service response: {auth_response.text}")
-        return jsonify({"message": "Patient registration failed"}), 500
+            patient_data = PatientSchema().dump(created_patient)
+            response = make_response(jsonify(patient_data), 201)
+            return response
+        else:
+            print(f"Authentication service response: {auth_response.text}")
+            return jsonify({"message": "Patient registration failed"}), 500
+
+    except Exception as e:
+        print(f"Exception: {str(e)}")
+        return jsonify({"message": "An error occurred"}), 500
+
 
 @bp.route('/<int:patient_id>', methods=['GET'])
 @response(patientSchema, 200)

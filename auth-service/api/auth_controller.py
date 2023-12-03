@@ -31,8 +31,7 @@ def register_user(data):
         return jsonify({'error': str(e)}), 500
     
 
-#Checks if the user is legit
-# Function to check if the user is legitimate
+# Checks if the user is legit
 # Function to check if the user is legitimate
 def is_user_valid():
     # Get the identity of the current user (based on the JWT token)
