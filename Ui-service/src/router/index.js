@@ -1,4 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
+//import jwt_decode from 'jwt-decode';
+//import store from '../store/auth.js';
+
 // Dashboard of users
 import DDashboard from '../views/Dentist/DDashboard.vue';
 import PDashboard from '../views/Patient/Dashboard.vue';
@@ -119,5 +122,43 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+
+/*router.beforeEach(async (to, from, next) => {
+  const accessToken = store.state.accessToken;
+
+  if (accessToken && isTokenValid(accessToken)) {
+    if (to.meta.userType === 'dentist' && accessToken.userType === 'Dentist') {
+      next();
+    } else if (to.meta.userType === 'patient' && accessToken.userType === 'Patient') {
+      next();
+    } else {
+      next('/error');
+    }
+  } else {
+    next('/login');
+  }
+});
+
+function isTokenValid(token) {
+  if (!token) {
+    return false;
+  }
+
+  try {
+    const decodedToken = jwt_decode(token);
+
+    if (decodedToken && decodedToken.exp) {
+      const currentTimestamp = Math.floor(Date.now() / 10000);
+
+      if (currentTimestamp < decodedToken.exp) {
+        return true;
+      }
+    }
+  } catch (error) {
+    console.error('Token validation error:', error);
+  }
+
+  return false;
+}*/
 
 export default router;

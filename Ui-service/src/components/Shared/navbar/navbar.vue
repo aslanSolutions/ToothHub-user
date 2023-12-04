@@ -146,6 +146,7 @@ export default {
         align-items: center;
         justify-content: center;
         flex: 1;
+        padding-right: 5%;
 
       }
   
