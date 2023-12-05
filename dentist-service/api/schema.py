@@ -1,8 +1,8 @@
-from marshmallow import Schema, fields
+from .marsh_schema import ma
 
-class DentistSchema(Schema):
-    name = fields.Str(required = True)
-    email = fields.Str(required = True)
-    phoneNumber = fields.Str(required = True)
-    password = fields.Str(required = True)
-    type = fields.Str(required=True)
+class DentistSchema(ma.Schema):
+    name = ma.String(required = True)
+    email = ma.String(required = True)
+    phoneNumber = ma.String(required = True)
+    password = ma.String(required = True)
+    type = ma.String(required=True)

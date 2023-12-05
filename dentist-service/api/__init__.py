@@ -2,6 +2,8 @@ from flask import Flask
 from apifairy import APIFairy
 from flask_marshmallow import Marshmallow
 from .routes import bp
+from .service_routes import service_bp
+from .marsh_schema import ma
 
 apifairy = APIFairy()
 ma = Marshmallow()
@@ -17,5 +19,6 @@ def create_app():
 
     # Register the dentsit blueprint
     app.register_blueprint(bp)
+    app.register_blueprint(service_bp)
 
     return app
