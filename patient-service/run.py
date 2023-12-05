@@ -12,4 +12,4 @@ def close_db(error):
 if __name__ == '__main__':
     # Using a default port of 5001, but allowing it to be overridden by an environment variable
     port = int(os.environ.get("PORT", 5001))
-    app.run(port=port)
+    app.run(debug=True,port=port)

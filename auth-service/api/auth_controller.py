@@ -1,5 +1,5 @@
 from flask import jsonify
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from flask_jwt_extended import create_access_token, get_jwt_identity, get_raw_jwt
 from .user_model import AuthedUser
 from .db import authed_collection
 
@@ -31,8 +31,7 @@ def register_user(data):
         return jsonify({'error': str(e)}), 500
     
 
-#Checks if the user is legit
-# Function to check if the user is legitimate
+# Checks if the user is legit
 # Function to check if the user is legitimate
 def is_user_valid():
     # Get the identity of the current user (based on the JWT token)
@@ -63,3 +62,13 @@ def login_user(data):
         return jsonify({'error': 'Invalid email or password'}), 401
     
     
+def protected_route():
+    current_user_email = get_jwt_identity()
+    return jsonify(message=f'Hi, {current_user_email}! This route is protected for specific users.'), 200
+
+revoked_tokens = set()
+
+def logout_user():
+    jti = get_raw_jwt()['jti']  # Get the JWT ID (jti) from the token
+    revoked_tokens.add(jti)
+    return jsonify(message='Logged out successfully'), 200

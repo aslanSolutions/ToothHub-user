@@ -1,4 +1,3 @@
-
 <!---Button for the admin dashboard---->
 <template>
     <div class="mb-4">

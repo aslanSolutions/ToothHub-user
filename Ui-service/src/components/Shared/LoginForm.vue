@@ -50,7 +50,7 @@ export default {
     methods: {
         async submitForm() {
             try {
-                const response = await axios.post('http://127.0.0.1:5000/auth/login', {
+                const response = await axios.post('http://127.0.0.1:5005/auth/login', {
                     email: this.email,
                     password: this.password
                 });
@@ -72,6 +72,7 @@ export default {
     padding: 20px;
     height: 100vh;
     /* Adjust as needed */
+    margin-top: 5rem;
     transform: translateX(35%);
 
 }
@@ -216,5 +217,4 @@ p {
     /* Space between checkbox and label */
     outline: none;
     border: none;
-}
-</style>
+}</style>

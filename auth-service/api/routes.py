@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from .auth_controller import login_user, register_user, is_user_valid
+from .auth_controller import login_user, register_user, is_user_valid, logout_user
 from flask_jwt_extended import jwt_required
 
 
@@ -30,3 +30,8 @@ def register_auth_blueprint(app):
 @jwt_required()
 def protected_route():
     return jsonify(message="Protected route accessed")
+
+@auth_blueprint.route('/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    return logout_user()
