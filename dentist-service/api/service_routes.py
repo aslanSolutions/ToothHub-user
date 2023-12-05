@@ -10,13 +10,6 @@ service_schema = ServiceSchema()
 services_schema = ServiceSchema(many=True)
 
 
-def hashImage(image):
-    try:
-        hashedImage = base64.b64encode(image).decode('utf-8')
-        return hashedImage
-    except Exception as e:
-        return {'Error': str(e)}
-
 @service_bp.route('/', methods=['POST'])
 @body(service_schema)
 @response(service_schema, 200)
