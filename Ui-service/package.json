@@ -17,6 +17,7 @@
     "axios": "^1.6.2",
     "core-js": "^3.8.3",
     "jwt-decode": "^4.0.0",
+    "mdb-vue-ui-kit": "^4.1.1",
     "qalendar": "^3.6.0",
     "v-calendar": "^3.1.2",
     "vue": "^3.3.9",
