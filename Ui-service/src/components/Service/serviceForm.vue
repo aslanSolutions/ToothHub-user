@@ -19,11 +19,6 @@
           </div>
 
           <div class="form-group">
-            <label for="duration">Duration:</label>
-            <input v-model="form.duration" type="number" id="duration" required />
-          </div>
-
-          <div class="form-group">
             <label for="image">Upload Image:</label>
             <input type="file" @change="handleImageUpload" accept="image/*" id="image" required />
           </div>

@@ -5,7 +5,7 @@
     <headerPhoto />
     <div class="serviceCard">
       <div v-if="isLoading" class="loading-circle">
-        <i class="fas fa-circle-notch fa-spin"></i>
+        <i class="fas fa-spinner fa-spin"></i> Loading...
       </div>
       <serviceCard
       v-for="service in services"
@@ -13,11 +13,12 @@
       @service-deleted="handleServiceDeleted"
       @edit-service="handleEditService"
       />
-      <div class="holder" v-if="isLoggedIn && (role === 'Admin')">
+      <!-- * <div class="holder" v-if="isLoggedIn && (role === 'Admin')">
         <button class="rectangle-button" @click="showFormModel">
           <i class="fas fa-plus"></i>
         </button>
       </div>
+      -->
     </div>
     <serviceForm :showModel="showModel" @close-modal="closeModal" @fetch-services="fetchServices"/>
     <serviceUpdate :showEdit="showEdit" :currentService="editingService" @close-modal="closeModal" @fetch-services="fetchServices" />
@@ -30,6 +31,7 @@ import serviceCard from '@/components/Service/serviceCard.vue'
 import headerPhoto from '@/components/Service/headerPhoto.vue'
 import serviceForm from '@/components/Service/serviceForm.vue'
 import serviceUpdate from '@/components/Service/serviceUpdate.vue'
+import '@fortawesome/fontawesome-free/css/all.css';
 // import { mapState } from 'vuex'
 
 export default {
@@ -93,6 +95,9 @@ export default {
 }
 
 .serviceCard{
+  padding-top: 50px;
+  margin-left:10%;
+  margin-right:10%;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;

@@ -1,26 +1,23 @@
 <template>
   <div class="service-card">
-    <div v-if="isLoggedIn && (role === 'Admin')" class="delete-button" @click="handleDelete">
+    <!-- * <div v-if="isLoggedIn && (role === 'Admin')" class="delete-button" @click="handleDelete">
       <i class="fas fa-times-circle"></i>
     </div>
     <div v-if="isLoggedIn && (role === 'Admin')" class="delete-button" style="margin-left: 30px;" @click="handleEdit">
       <i class="fas fa-pencil-alt"></i>
-    </div>
-    <img :src="getImageUrl(service.image)" alt="Service Image" />
+    </div>  -->
+    <img :src="decodeImage(service.image)" alt="Service Image" />
     <div class="NamePrice">
       <h2 class="name">{{ service.name }}</h2>
       <p class="price">${{ service.price }}</p>
     </div>
     <p class="description">{{ service.description }}</p>
-    <div class="durationBook">
-      <p class="duration"> {{ service.duration }} min</p>
-      <button class="booking">Book</button>
-    </div>
+    <button class="booking">Book</button>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+// import { mapState } from 'vuex'
 import { services } from '@/api/serviceApi'
 
 export default {
@@ -30,18 +27,15 @@ export default {
       required: true
     }
   },
-  computed: {
-    ...mapState(['isLoggedIn', 'role'])
-  },
+  //computed: {
+    //...mapState(['isLoggedIn', 'role'])
+  //},
   methods: {
-    getImageUrl(imageBufferObject) {
-      if (!imageBufferObject || !imageBufferObject.data || !Array.isArray(imageBufferObject.data)) {
-        return null
+    decodeImage(base64Data) {
+      if (base64Data) {
+        return 'data:image/png;base64,' + base64Data;
       }
-
-      const blob = new Blob([new Uint8Array(imageBufferObject.data)], { type: imageBufferObject.type })
-      const dataUrl = URL.createObjectURL(blob)
-      return dataUrl
+      return null;
     },
     async handleDelete() {
       const confirmation = window.confirm('Do you really want to delete?')
@@ -69,10 +63,12 @@ export default {
   background-color: rgb(255, 255, 255);
   max-width: 300px;
   width: 100%;
-  height: min(10rem, 450px);
-  height: 100%;
+  min-height: fill;
+  height: 450px;
   box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.07);
   backdrop-filter: blur(10px);
+  border-top-left-radius: 30px; /* Adjust the value based on your preference */
+  border-top-right-radius: 30px; /* Adjust the value based on your preference */
 }
 
 .service-card img {
@@ -83,6 +79,7 @@ export default {
 .name {
   font-size: max(1.0rem, 17px);
   font-weight: 650;
+  color: rgba(73, 135, 161, 1)
 }
 
 .NamePrice {
@@ -95,7 +92,7 @@ export default {
 }
 
 .price {
-  color: rgba(231, 163, 86, 1);
+  color: rgba(73, 135, 161, 1); 
   font-size: max(0.9vw, 12px);
   letter-spacing: 0em;
   font-weight: 650;
@@ -107,39 +104,20 @@ export default {
   color: rgba(136, 135, 143, 1);
   font-weight: 400;
   font-size: max(0.8vw, 13px);
+  padding-top: 5%;
   padding-bottom: 5%;
   padding-left: 5%;
   padding-right: 5%;
 }
 
-.durationBook {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-left: 4%;
-  margin-right: 4%;
-  margin-bottom: 50px;
-}
-
-.duration {
-  background-color: rgba(255, 235, 212, 1);
-  color: rgba(231, 163, 86, 1);
-  border-radius: 26px;
-  padding-left: 5px;
-  padding-right: 5px;
-  padding-top: 1px;
-  padding-bottom: 2px;
-}
 
 .booking {
   height: 50px;
   width: 180px;
   max-width: 180px;
   max-height: 50px;
-  border-radius: 8px;
-  background: rgba(231, 163, 86, 1);
+  background: rgba(73, 135, 161, 1);
   color: rgba(255, 255, 255, 1);
-  border-color: rgba(231, 163, 86, 1);
   border: none;
 }
 
@@ -168,7 +146,7 @@ export default {
 @media (max-width: 768px) {
   .service-card {
     width: min(100%, 8rem);
-    height: min(70%, 10rem);
+    height: fill;
   }
 
   .service-card img {
@@ -176,21 +154,15 @@ export default {
     height: fill;
   }
 
-  .book {
+  .booking {
     max-width: 3rem;
     max-height: 2rem;
     font-size: 0.7rem;
   }
 
   .description {
-    font-size: min(5vw, 11);
-    line-height: min(3vw, 7);
+    font-size: min(1.8vw, 11px);
+    line-height: min(2vw, 8px);
   }
-  .duration{
-    border-radius: 1rem;
-    padding-left: 5px;
-    padding-right: 5px;
-    font-size: 0.8rem;
-}
 }
 </style>

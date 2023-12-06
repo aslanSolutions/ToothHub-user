@@ -18,10 +18,6 @@
             <textarea v-model="form.description" id="description" required></textarea>
           </div>
 
-          <div class="form-group">
-            <label for="duration">Duration:</label>
-            <input v-model="form.duration" type="number" id="duration" required />
-          </div>
 
           <div class="form-group">
             <label for="image">Upload Image:</label>
@@ -55,7 +51,6 @@ export default {
         name: '',
         price: null,
         description: '',
-        duration: null,
         image: null
       }
     }
@@ -67,7 +62,6 @@ export default {
           this.form.name = newService.name || ''
           this.form.price = newService.price || null
           this.form.description = newService.description || ''
-          this.form.duration = newService.duration || null
         }
       },
       immediate: true
@@ -83,7 +77,6 @@ export default {
       formData.append('name', this.form.name)
       formData.append('price', this.form.price)
       formData.append('description', this.form.description)
-      formData.append('duration', this.form.duration)
       formData.append('image', this.form.image)
 
       services.updateService(this.currentService._id, formData)

@@ -13,11 +13,11 @@ def create_app():
     app = Flask(__name__)
     app.config['APIFAIRY_TITLE'] = 'Dentist API'
     app.config['APIFAIRY_VERSION'] = '1.0'
+    CORS(app)
 
     # Initialize APIFairy, Marshmallow, and CORS
     apifairy.init_app(app)
     ma.init_app(app)
-    CORS(app, origins="http://localhost:8080")
 
     # Register the dentsit blueprint
     app.register_blueprint(bp)
