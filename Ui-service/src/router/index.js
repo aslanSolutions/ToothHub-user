@@ -17,6 +17,7 @@ import Login from '@/components/Shared/LoginForm.vue';
 import Register from '@/components/patinet/RegistrationForm.vue';
 import Service from '../views/Service.vue';
 import Contact from '../views/Contact.vue';
+import About from '../views/About.vue';
 
 
 // Navbar and sidebars 
@@ -143,6 +144,16 @@ const routes = [
     name: 'Contact',
     components: {
       default: Contact,
+      sidebar: Sidebar,
+      footer: footer,
+      navbar: Navbar,
+    },
+  },
+  {
+    path: '/About',
+    name: 'About',
+    components: {
+      default: About,
       sidebar: Sidebar,
       footer: footer,
       navbar: Navbar,
