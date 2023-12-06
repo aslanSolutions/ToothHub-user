@@ -1,7 +1,9 @@
 <template>
   <fwb-footer footer-type="socialmedia">
     <div class="md:flex md:justify-between">
-      <fwb-footer-brand alt="dentist Image" name="Logo" src="https://flowbite.com/docs/images/logo.svg" />
+      <div class="LogoPhoto">
+        <img src="@/assets/logo22.png" alt="Image of a man cutting a client's hair" />
+      </div>
       <div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
         <div>
           <h2 class="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-gray">
@@ -90,5 +92,12 @@ import {
 <style scoped>
 .space{
   padding-top: 30px;
+}
+
+.LogoPhoto{
+  padding-left: 25px;
+  padding-bottom: 15px;
+  width: max(25%,20rem);
+
 }
 </style>
