@@ -16,6 +16,7 @@ import Home from '../views/Home.vue';
 import Login from '@/components/Shared/LoginForm.vue';
 import Register from '@/components/patinet/RegistrationForm.vue';
 import Service from '../views/Service.vue';
+import Contact from '../views/Contact.vue';
 
 
 // Navbar and sidebars 
@@ -137,8 +138,18 @@ const routes = [
       footer: footer
     },
   },
+  {
+    path: '/Contact',
+    name: 'Contact',
+    components: {
+      default: Contact,
+      sidebar: Sidebar,
+      footer: footer,
+      navbar: Navbar,
+    },
+  }
 ];
-
+Contact
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
