@@ -16,6 +16,7 @@
     "@vuepic/vue-datepicker": "^7.3.0",
     "axios": "^1.6.2",
     "core-js": "^3.8.3",
+    "flowbite-vue": "^0.1.1",
     "jwt-decode": "^4.0.0",
     "mdb-vue-ui-kit": "^4.1.1",
     "qalendar": "^3.6.0",
