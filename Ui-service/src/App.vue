@@ -14,11 +14,11 @@
       </div>
       <router-view name="Rightbar" class="right-sidebar"></router-view>
     </div>
+    <router-view name="footer" class="footer"></router-view>
   </div>
 </template>
 
 <script setup>
-// Your script here
 </script>
 
 <style lang="scss">

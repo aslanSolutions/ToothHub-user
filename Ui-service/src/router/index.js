@@ -15,14 +15,17 @@ import Settings from '../views/Settings.vue';
 import Home from '../views/Home.vue';
 import Login from '@/components/Shared/LoginForm.vue';
 import Register from '@/components/patinet/RegistrationForm.vue';
+import Service from '../views/Service.vue';
+
 
 // Navbar and sidebars 
 import Sidebar from '../components/Sidebar.vue';
 import Dsidebar from '../components/Dentist/Dashboard/Dsidebar.vue';
 import PSidebar from '../components/patinet/sidebar.vue';
 import Navbar from '../components/Shared/navbar/navbar.vue';
-import RightSidebar from '../components/Dentist/Dashboard/RightBar.vue';
+import footer from '../components/Shared/footer.vue';
 
+import RightSidebar from '../components/Dentist/Dashboard/RightBar.vue';
 const routes = [
 
   {
@@ -48,7 +51,17 @@ const routes = [
     name: 'Home',
     components: {
       default: Home,
-      navbar: Navbar
+      navbar: Navbar,
+      footer: footer
+    },
+  },
+  {
+    path: '/',
+    name: 'Service',
+    components: {
+      default: Service,
+      navbar: Navbar,
+      footer: footer
     },
   },
   {
@@ -58,6 +71,7 @@ const routes = [
       default: Dashboard,
       Sidebar: Sidebar,
       Rightbar: RightSidebar,
+      footer: footer
     },
   },
   {
@@ -65,7 +79,8 @@ const routes = [
     name: 'Register',
     components: {
       default: Register,
-      navbar: Navbar
+      navbar: Navbar,
+      footer: footer
     },
   },
   {
@@ -73,7 +88,8 @@ const routes = [
     name: 'Login',
     components: {
       default: Login,
-      navbar: Navbar
+      navbar: Navbar,
+      footer: footer
     },
   },
   {
@@ -82,6 +98,7 @@ const routes = [
     components: {
       default: Appointments,
       sidebar: Sidebar,
+      footer: footer
     },
   },
   {
@@ -90,6 +107,7 @@ const routes = [
     components: {
       default: Dentists,
       sidebar: Sidebar,
+      footer: footer
     },
   },
   {
@@ -98,6 +116,7 @@ const routes = [
     components: {
       default: Patients,
       sidebar: Sidebar,
+      footer: footer
     },
   },
   {
@@ -106,6 +125,7 @@ const routes = [
     components: {
       default: Revenue,
       sidebar: Sidebar,
+      footer: footer
     },
   },
   {
@@ -114,6 +134,7 @@ const routes = [
     components: {
       default: Settings,
       sidebar: Sidebar,
+      footer: footer
     },
   },
 ];

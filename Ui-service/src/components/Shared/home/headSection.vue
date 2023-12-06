@@ -90,7 +90,8 @@ export default {
   bottom: 0;
   z-index: 3;
   width: 60%;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  border-radius: 50px;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  border-top-right-radius: 50px; /* Adjust the value based on your preference */
 }
 </style>
