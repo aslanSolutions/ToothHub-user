@@ -1,10 +1,11 @@
 import os
 from pymongo import MongoClient
-from flask_dotenv import DotEnv
+from dotenv import load_dotenv
 
-DotEnv()
+load_dotenv()
 
-mongodb_uri = "mongodb+srv://ali:ali@aslan.im1wsjq.mongodb.net/"
+# Retrieve MongoDB URI from environment variable
+mongodb_uri = os.getenv('MONGODB_URI')
 
 
 try:
