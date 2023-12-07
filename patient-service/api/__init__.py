@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from apifairy import APIFairy
 from flask_marshmallow import Marshmallow
 from .routes import bp
@@ -10,6 +11,8 @@ def create_app():
     app = Flask(__name__)
     app.config['APIFAIRY_TITLE'] = 'Patient API'
     app.config['APIFAIRY_VERSION'] = '1.0'
+
+    CORS(app)
 
     # Initialize APIFairy, Marshmallow
     apifairy.init_app(app)

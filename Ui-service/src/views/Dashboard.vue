@@ -5,6 +5,8 @@
         Dashboard
       </h1>
       <p>{{ currentDate }}</p>
+      <router-view></router-view>
+
     </div>
     <div class="flex-container">
       <Button />
