@@ -1,6 +1,6 @@
 <template>
   <div class="Appointment-Container">
-        <h1 class="text-4xl md:text-4xl leading-24 md:leading-32 font-inter font-bold tracking-tighter text-cyan-800 dark:text-cyan-600">
+        <h1 class="text-4xl md:text-4xl leading-24 md:leading-32 font-inter font-bold tracking-tighter ml-2 my-2 text-cyan-800 dark:text-cyan-600">
             Appointments
           </h1>
           <FSection />
