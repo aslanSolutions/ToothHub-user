@@ -4,10 +4,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 // Dashboard of users
 import DDashboard from '../views/Dentist/DDashboard.vue';
+import DAppointments from '../views/Dentist/DAppointments.vue'
 import PDashboard from '../views/Patient/Dashboard.vue';
 import Dashboard from '../views/Dashboard.vue';
 // Pages
-import Appointments from '../views/Appointments.vue';
 import Dentists from '../views/Dentists.vue';
 import Patients from '../views/Patients.vue';
 import Revenue from '../views/Revenue.vue';
@@ -15,14 +15,19 @@ import Settings from '../views/Settings.vue';
 import Home from '../views/Home.vue';
 import Login from '@/components/Shared/LoginForm.vue';
 import Register from '@/components/patinet/RegistrationForm.vue';
+import Service from '../views/Service.vue';
+import Contact from '../views/Contact.vue';
+import About from '../views/About.vue';
+
 
 // Navbar and sidebars 
 import Sidebar from '../components/Sidebar.vue';
 import Dsidebar from '../components/Dentist/Dashboard/Dsidebar.vue';
 import PSidebar from '../components/patinet/sidebar.vue';
 import Navbar from '../components/Shared/navbar/navbar.vue';
-import RightSidebar from '../components/Dentist/Dashboard/RightBar.vue';
+import footer from '../components/Shared/footer.vue';
 
+import RightSidebar from '../components/Dentist/Dashboard/RightBar.vue';
 const routes = [
 
   {
@@ -48,7 +53,17 @@ const routes = [
     name: 'Home',
     components: {
       default: Home,
-      navbar: Navbar
+      navbar: Navbar,
+      footer: footer
+    },
+  },
+  {
+    path: '/',
+    name: 'Service',
+    components: {
+      default: Service,
+      navbar: Navbar,
+      footer: footer
     },
   },
   {
@@ -58,6 +73,7 @@ const routes = [
       default: Dashboard,
       Sidebar: Sidebar,
       Rightbar: RightSidebar,
+      footer: footer
     },
   },
   {
@@ -65,7 +81,8 @@ const routes = [
     name: 'Register',
     components: {
       default: Register,
-      navbar: Navbar
+      navbar: Navbar,
+      footer: footer
     },
   },
   {
@@ -73,15 +90,17 @@ const routes = [
     name: 'Login',
     components: {
       default: Login,
-      navbar: Navbar
+      navbar: Navbar,
+      footer: footer
     },
   },
   {
     path: '/Appointments',
-    name: 'Appointments',
+    name: 'DAppointments',
     components: {
-      default: Appointments,
+      default: DAppointments,
       sidebar: Sidebar,
+      footer: footer
     },
   },
   {
@@ -90,6 +109,7 @@ const routes = [
     components: {
       default: Dentists,
       sidebar: Sidebar,
+      footer: footer
     },
   },
   {
@@ -98,6 +118,7 @@ const routes = [
     components: {
       default: Patients,
       sidebar: Sidebar,
+      footer: footer
     },
   },
   {
@@ -106,6 +127,7 @@ const routes = [
     components: {
       default: Revenue,
       sidebar: Sidebar,
+      footer: footer
     },
   },
   {
@@ -114,10 +136,31 @@ const routes = [
     components: {
       default: Settings,
       sidebar: Sidebar,
+      footer: footer
     },
   },
+  {
+    path: '/Contact',
+    name: 'Contact',
+    components: {
+      default: Contact,
+      sidebar: Sidebar,
+      footer: footer,
+      navbar: Navbar,
+    },
+  },
+  {
+    path: '/About',
+    name: 'About',
+    components: {
+      default: About,
+      sidebar: Sidebar,
+      footer: footer,
+      navbar: Navbar,
+    },
+  }
 ];
-
+Contact
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,

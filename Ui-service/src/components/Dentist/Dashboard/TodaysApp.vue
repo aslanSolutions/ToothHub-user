@@ -161,7 +161,7 @@
   }
 
   .name {
-    font-weight: 700;
+    font-weight: 600;
     font-size: 15px;
     line-height: 24px;
     color: #000000;
