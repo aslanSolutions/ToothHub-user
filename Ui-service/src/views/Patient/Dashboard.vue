@@ -15,16 +15,18 @@
 <script>
 import DentistImg from '../../components/Dentist/Dashboard/DentistImg.vue'
 import DataPicker from '../../components/patinet/dataPicker.vue'
-import timePicker from '../../components/patinet/timePicker.vue'
+import TimePicker from '../../components/patinet/timePicker.vue'
 
 export default {
   components: {
-    DentistImg, DataPicker, timePicker
+    DentistImg,
+    DataPicker,
+    TimePicker
   },
   data() {
     return {
       currentDate: '',
-      selectedDate: null
+      selectedDate: new Date()
     };
   },
   mounted() {
@@ -58,7 +60,6 @@ export default {
 }
 
 .DentistImg, .DataPicker {
-  /* Ensure these components take up only the space they need */
   flex: none;
 }
 
