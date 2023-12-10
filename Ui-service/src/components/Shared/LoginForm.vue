@@ -38,6 +38,7 @@
    
 <script>
 import axios from 'axios';
+import { mapActions } from 'vuex'; // Import Vuex mapActions
 
 export default {
     name: 'UserLogin',
@@ -48,14 +49,28 @@ export default {
         };
     },
     methods: {
+        ...mapActions(['updateEmail', 'updateType', 'updateAccessToken']),
+
         async submitForm() {
             try {
                 const response = await axios.post('http://127.0.0.1:5005/auth/login', {
                     email: this.email,
                     password: this.password
                 });
-                console.log(response.data);
-                // Handle success (e.g., redirect or show a success message)
+                console.log(response.data)
+                if (response.data && response.data.access_token) {
+                    this.updateEmail(response.data.user.email);
+                    this.updateType(response.data.user.type); 
+                    this.updateAccessToken(response.data.access_token);
+
+                    if (response.data.user.type === 'Patient') {
+                        this.$router.push('/patient-dashboard');
+                    } else if (response.data.user.type === 'Dentist') {
+                        this.$router.push('/dentist-dashboard');
+                    }
+                } else {
+                    console.error('Invalid login response format');
+                }
             } catch (error) {
                 console.error(error);
                 // Handle error (e.g., show error message)
@@ -217,4 +232,5 @@ p {
     /* Space between checkbox and label */
     outline: none;
     border: none;
-}</style>
+}
+</style>

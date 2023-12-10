@@ -4,7 +4,7 @@ import './index.css'
 
 
 import router from './router'
-import store from '@/store/auth'
+import store from './store';
 
 const app = createApp(App);
 app.use(router);

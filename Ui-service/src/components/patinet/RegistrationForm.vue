@@ -75,24 +75,19 @@ export default {
                 // Example: Redirect to a login page or a success page
                 // this.$router.push('/login');
             } catch (error) {
-                console.error(error);
-
-                if (!error.response) {
-                    // Network error or server unreachable
-                    alert('Unable to connect to the server. Please try again later.');
+                if (error.response) {
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                    console.error('Error Response', error.response.data);
+                    alert(`Error: ${error.response.data.message}`);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.error('Error Request', error.request);
+                    alert('No response from server.');
                 } else {
-                    // Handle common HTTP errors
-                    switch (error.response.status) {
-                        case 400:
-                            alert('Invalid input. Please check your data and try again.');
-                            break;
-                        case 409:
-                            alert('This email is already in use. Please use a different email.');
-                            break;
-                        default:
-                            alert('An error occurred. Please try again.');
-                            break;
-                    }
+                    // Something happened in setting up the request that triggered an Error
+                    console.error('Error', error.message);
+                    alert('Error: ' + error.message);
                 }
             }
         }

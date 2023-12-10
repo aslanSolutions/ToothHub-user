@@ -1,5 +1,5 @@
 from flask import jsonify
-from flask_jwt_extended import create_access_token, get_jwt_identity, get_raw_jwt
+from flask_jwt_extended import get_jwt, get_jti, create_access_token
 from .user_model import AuthedUser
 from .db import authed_collection
 
@@ -52,11 +52,17 @@ def login_user(data):
     if not user_data:
         return jsonify({'error': 'Invalid email or password'}), 401
 
-    # Check if the password matches
     if AuthedUser.check_password(data['password'], user_data['password_hash']):
-        # Password matches, create JWT token and login successful
-        access_token = create_access_token(identity=data['email'])
-        return jsonify(access_token=access_token), 200
+        access_token = create_access_token(identity=data['email'], additional_claims={'type': user_data['type']})
+
+        return jsonify({
+            'access_token': access_token,
+            'user': {
+                'email': data['email'],
+                'type': user_data['type']
+            }
+        }), 200
+
     else:
         # Password does not match
         return jsonify({'error': 'Invalid email or password'}), 401
@@ -69,6 +75,7 @@ def protected_route():
 revoked_tokens = set()
 
 def logout_user():
-    jti = get_raw_jwt()['jti']  # Get the JWT ID (jti) from the token
+    access_token = get_jwt()
+    jti = get_jti(access_token)
     revoked_tokens.add(jti)
     return jsonify(message='Logged out successfully'), 200

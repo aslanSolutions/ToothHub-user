@@ -9,52 +9,51 @@
 import VueCal from 'vue-cal';
 import 'vue-cal/dist/vuecal.css';
 import axios from 'axios';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Calendar',
   components: {
     VueCal
-  },
-  props: {
+  }, computed: {
+    ...mapGetters(['getEmail'])
   },
   data() {
     return {
       events: [],
       selectedTimeSlots: [],
-      selectedDate: null
+      selectedDate: null,
+      dentist: ''
     };
   },
   methods: {
     showErrorToUser(message) {
-      // Display the error message to the user using an alert or another UI element
       alert(message);
     },
-    // Called when an existing event is dropped after dragging
+
     handleEventDrop({ event, newStart, newEnd }) {
-      // Prompt for confirmation before updating the event
+
       if (confirm('Are you sure you want to move this appointment?')) {
-        // Here you would call the backend to update the event's times
+
         this.updateAvailability(event._id, newStart, newEnd);
       } else {
-        // If the user cancels, revert the event back to its original position
-        this.fetchEvents(); // Assuming fetchEvents refreshes the events from the backend
+
+        this.fetchEvents();
       }
     },
-    // Called when an event is resized
     handleEventResize({ event, newStart, newEnd }) {
-      // Prompt for confirmation before updating the event
       if (confirm('Confirm the new time slot?')) {
-        // Call the backend to update the event's duration
         this.updateAvailability(event._id, newStart, newEnd);
       } else {
-        // Revert the changes if the user cancels
         this.fetchEvents();
       }
     },
     handleEventClick() {
-      // Event click logic
     },
     async setAvailability(dentistEmail, date, timeSlots) {
+
+      console.log("email", dentistEmail)
+
       if (!date) {
         console.error('Date is undefined');
         this.showErrorToUser('Date is required to set availability.');
@@ -145,13 +144,13 @@ export default {
         end_time: event.end,
       };
 
-      this.setAvailability("this.dentistEmail", date, [timeSlot]);
+      this.setAvailability(this.dentist, date, [timeSlot]);
     },
     async fetchEvents() {
       try {
         // Replace with the correct endpoint URL
         const response = await axios.get('http://127.0.0.1:5004/availability/get_availability', {
-          params: { dentist_email: "this.dentistEmail" }
+          params: { dentist_email: this.dentist }
         });
 
         if (response.data && response.data.availability) {
@@ -174,11 +173,7 @@ export default {
             });
 
           });
-          console.log(response.data)
-          console.log(this.events)
-
           this.events = events;
-          console.log(this.events);
         }
       } catch (error) {
         console.error('Error fetching events:', error);
@@ -187,6 +182,8 @@ export default {
     },
   },
   mounted() {
+    this.dentist = this.getEmail;
+
     this.$nextTick(() => {
       this.fetchEvents();
     });
