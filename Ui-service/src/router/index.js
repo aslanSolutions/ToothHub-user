@@ -73,7 +73,6 @@ const routes = [
       default: Dashboard,
       Sidebar: Sidebar,
       Rightbar: RightSidebar,
-      footer: footer
     },
   },
   {
@@ -109,7 +108,6 @@ const routes = [
     components: {
       default: Dentists,
       sidebar: Sidebar,
-      footer: footer
     },
   },
   {
@@ -118,7 +116,6 @@ const routes = [
     components: {
       default: Patients,
       sidebar: Sidebar,
-      footer: footer
     },
   },
   {
@@ -127,7 +124,6 @@ const routes = [
     components: {
       default: Revenue,
       sidebar: Sidebar,
-      footer: footer
     },
   },
   {
@@ -136,7 +132,6 @@ const routes = [
     components: {
       default: Settings,
       sidebar: Sidebar,
-      footer: footer
     },
   },
   {
@@ -144,7 +139,6 @@ const routes = [
     name: 'Contact',
     components: {
       default: Contact,
-      sidebar: Sidebar,
       footer: footer,
       navbar: Navbar,
     },
@@ -154,7 +148,6 @@ const routes = [
     name: 'About',
     components: {
       default: About,
-      sidebar: Sidebar,
       footer: footer,
       navbar: Navbar,
     },

@@ -1,9 +1,8 @@
 <template>
-  <vue-cal ref="calendar" id="cal" hide-view-selector hide-title-bar hide-weekends :time-from="8 * 60" :time-to="18 * 60"
-    :time-step="30" :disable-views="['years', 'year']"
+  <vue-cal :events="events" ref="calendar" id="cal" :time-from="8 * 60" :time-to="18 * 60" :time-step="30"
+    :disable-views="['years', 'year']" hide-weekends @event-drag-create="onDragCreate"
     :editable-events="{ title: false, drag: true, resize: true, delete: true, create: true }"
-    :drag-to-create-threshold="0" @event-drop="handleEventDrop" @event-resize="handleEventResize" @event-drag="handleCellClick">
-    ></vue-cal>
+    :drag-to-create-threshold="0" @event-drop="handleEventDrop" @event-resize="handleEventResize"></vue-cal>
 </template>
 
 <script>
@@ -21,7 +20,8 @@ export default {
   data() {
     return {
       events: [],
-      selectedTimeSlots: []
+      selectedTimeSlots: [],
+      selectedDate: null
     };
   },
   methods: {
@@ -62,33 +62,59 @@ export default {
       }
 
       const formattedDate = new Date(date).toISOString().split('T')[0];
-      const formattedTimeSlots = timeSlots.map((slot, index) => ({
-        time_slot_id: `slot_${index}`,
-        start_time: new Date(slot.start_time).toISOString(),
-        end_time: new Date(slot.end_time).toISOString(),
-      }));
 
-      // Log the payload for debugging
-      console.log('Sending availability data:', { dentist_email: dentistEmail, date: formattedDate, time_slots: formattedTimeSlots });
+      const roundToNearest = (date) => {
+        const minutes = date.getMinutes();
+        if (minutes < 15) {
+          date.setMinutes(0); // Round down to 00
+        } else if (minutes < 45) {
+          date.setMinutes(30);
+        } else {
+          date.setHours(date.getHours() + 1);
+          date.setMinutes(0);
+        }
+        return date;
+      };
+
+      const formattedNewTimeSlots = timeSlots.map((slot) => {
+        let startDateTime = new Date(slot.start_time);
+        let endDateTime = new Date(slot.end_time);
+
+        startDateTime = roundToNearest(startDateTime);
+        endDateTime = roundToNearest(endDateTime);
+
+        const startUtc = new Date(startDateTime.getTime() - (startDateTime.getTimezoneOffset() * 60000)).toISOString();
+        const endUtc = new Date(endDateTime.getTime() - (endDateTime.getTimezoneOffset() * 60000)).toISOString();
+
+        return {
+          start_time: startUtc,
+          end_time: endUtc,
+        };
+      });
 
       try {
-        const response = await axios.post('http://127.0.0.1:5004/availability/set_availability', {
-          dentist_email: dentistEmail,
-          date: date,
-          time_slots: timeSlots
+        let response = await axios.get('http://127.0.0.1:5004/availability/get_availability', {
+          params: { dentist_email: dentistEmail, date: formattedDate }
         });
 
-        console.log(response)
+        let existingTimeSlots = [];
+        if (response.data && response.data.availability && response.data.availability.length > 0) {
+          existingTimeSlots = response.data.availability[0].time_slots;
+        }
 
-        // Rest of the success handling...
+        const combinedTimeSlots = [...existingTimeSlots, ...formattedNewTimeSlots];
+
+        response = await axios.post('http://127.0.0.1:5004/availability/set_availability', {
+          dentist_email: dentistEmail,
+          date: formattedDate,
+          time_slots: combinedTimeSlots
+        });
+
+        console.log(response);
+
       } catch (error) {
         console.error('Error setting availability:', error.response ? error.response.data : error);
-        if (error.response && error.response.data) {
-          // If the backend provides error details, log them or display them to the user
-          this.showErrorToUser(`Failed to set availability: ${error.response.data.detail || 'Unknown error'}`);
-        } else {
-          this.showErrorToUser('Failed to set availability. Please try again.');
-        }
+        this.showErrorToUser(`Failed to set availability: ${error.response.data.detail || 'Unknown error'}`);
       }
     },
     async updateAvailability(eventId, newStart, newEnd) {
@@ -98,51 +124,80 @@ export default {
           end_time: newEnd
         });
         if (response.data.success) {
-          // Optionally, refresh the events here or handle the UI update
           this.fetchEvents();
         }
       } catch (error) {
         console.error('Error updating availability:', error.response ? error.response.data.message : error);
-        // Optionally, revert the changes in the UI or inform the user of the error
         this.fetchEvents();
       }
     },
-    handleCellClick(eventDetails) {
-      // Check if eventDetails contains valid properties
-      if (!eventDetails || !eventDetails.start || !eventDetails.end) {
-        console.error('Invalid event data:', eventDetails);
-        // Handle the invalid data appropriately, e.g., show an error message
+    onDragCreate(event) {
+      console.log(event);
+      const date = event.start.toISOString().split('T')[0]
+      if (!date) {
+        console.error('Selected date is undefined');
+        this.showErrorToUser('A date must be selected to set availability.');
         return;
       }
-      console.log("Test")
-      // Convert the start and end to ISO strings
-      const startTime = eventDetails.start.toISOString();
-      const endTime = eventDetails.end.toISOString();
 
-      // Create the time slot data
       const timeSlot = {
-        time_slot_id: `slot_${Date.now()}`, // You can generate a unique ID here
-        start_time: startTime,
-        end_time: endTime,
+        start_time: event.start,
+        end_time: event.end,
       };
 
-      // Now, call setAvailability with the necessary data
-      this.setAvailability('dentistEmail', startTime.split('T')[0], [timeSlot]);
+      this.setAvailability("this.dentistEmail", date, [timeSlot]);
     },
-    fetchEvents() {
-      // Fetching logic
-    }
+    async fetchEvents() {
+      try {
+        // Replace with the correct endpoint URL
+        const response = await axios.get('http://127.0.0.1:5004/availability/get_availability', {
+          params: { dentist_email: "this.dentistEmail" }
+        });
+
+        if (response.data && response.data.availability) {
+          // Assuming each item in 'availability' has 'date' and 'time_slots'
+          const events = [];
+          response.data.availability.forEach(availabilityItem => {
+            availabilityItem.time_slots.forEach(slot => {
+              const start = new Date(slot.start_time);
+              const end = new Date(slot.end_time);
+
+              start.setHours(start.getHours() - 1);
+              end.setHours(end.getHours() - 1);
+
+              events.push({
+                start: start,
+                end: end,
+                title: 'Available',
+                class: 'available'
+              });
+            });
+
+          });
+          console.log(response.data)
+          console.log(this.events)
+
+          this.events = events;
+          console.log(this.events);
+        }
+      } catch (error) {
+        console.error('Error fetching events:', error);
+        this.showErrorToUser('Failed to fetch available time slots.');
+      }
+    },
   },
   mounted() {
-    this.fetchEvents();
+    this.$nextTick(() => {
+      this.fetchEvents();
+    });
   }
 };
 </script>
 
 <style scoped>
 /* Example styles */
-.vuecal--event.available {
-  background-color: #9fcd9f;
+.vuecal__event.available {
+  background-color: #2df29dd4;
 }
 
 .vuecal--event.booked {
