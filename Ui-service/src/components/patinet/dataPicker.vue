@@ -22,7 +22,7 @@ export default {
     methods: {
         handleDayClick(day) {
             console.log('Day clicked:', day);
-            this.$emit('date-selected', day);
+            this.$emit('date-selected', day.date);  // Emit JavaScript Date object
         }
     }
 }
