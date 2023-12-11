@@ -11,7 +11,7 @@ dentist_collection = users['Dentist']
 
 dentistSchema = DentistSchema()
 
-AUTH_SERVICE_URL = "http://localhost:5005"
+AUTH_SERVICE_URL = "http://localhost:5005/auth"
 
 @bp.route('/', methods=['POST'])
 def register_dentist():
@@ -26,7 +26,7 @@ def register_dentist():
             return jsonify({"message": "Validation error", "errors": errors}), 400
 
         # Make a registration request to the authentication service
-        auth_service_url = "http://127.0.0.1:5005/auth/register"  # Update with the correct URL
+        auth_service_url = AUTH_SERVICE_URL + "/register"  # Update with the correct URL
         auth_payload = {
             "username": payload["name"],  # Use relevant dentist information
             "email": payload["email"],

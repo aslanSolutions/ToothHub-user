@@ -36,6 +36,10 @@ def create_patient():
 
         auth_response = requests.post(auth_service_url, json=auth_payload)
 
+        if auth_response.status_code != 201:
+            print(f"Authentication service response: {auth_response.status_code}, {auth_response.text}")
+            return jsonify({"message": "Patient registration failed", "details": auth_response.text}), auth_response.status_code
+
         if auth_response.status_code == 201:
             result = users.insert_one(payload)
             new_patient_id = result.inserted_id
@@ -49,8 +53,8 @@ def create_patient():
             return jsonify({"message": "Patient registration failed"}), 500
 
     except Exception as e:
-        print(f"Exception: {str(e)}")
-        return jsonify({"message": "An error occurred"}), 500
+        print(f"Exception in create_patient: {str(e)}")
+        return jsonify({"message": "An error occurred", "error": str(e)}), 500
 
 
 @bp.route('/<int:patient_id>', methods=['GET'])

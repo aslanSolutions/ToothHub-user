@@ -3,7 +3,7 @@
 
 const state = {
     email: '',
-    userType: '',
+    type: '',
     accessToken: ''
 };
 
@@ -11,7 +11,7 @@ const state = {
 
 const getters = {
     getEmail: (state) => state.email,
-    getUserType: (state) => state.userType,
+    getType: (state) => state.type,
     getAccessToken: (state) => state.accessToken
 };
 
@@ -19,7 +19,7 @@ const getters = {
 
 const mutations = {
     setEmail: (state, email) => (state.email = email),
-    setUserType: (state, userType) => (state.userType = userType),
+    setType: (state, type) => (state.type = type),
     setAccessToken: (state, accessToken) => (state.accessToken = accessToken)
 };
 
@@ -29,8 +29,8 @@ const actions = {
     updateEmail: ({commit}, email) => {
         commit ('setEmail', email);
     },
-    updateUserType: ({commit}, userType) => {
-        commit ('setUserType', userType);
+    updateType: ({commit}, type) => {
+        commit ('setType', type);
     },
     updateAccessToken: ({commit}, accessToken) => {
         commit ('setAccessToken', accessToken)

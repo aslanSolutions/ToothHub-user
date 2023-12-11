@@ -7,6 +7,7 @@ colorama==0.4.6
 Flask==3.0.0
 Flask-HTTPAuth==4.8.0
 flask-marshmallow==0.15.0
+flask_cors==4.0.0
 Flask-SocketIO==5.3.6
 h11==0.14.0
 itsdangerous==2.1.2
@@ -21,3 +22,9 @@ simple-websocket==1.0.0
 webargs==8.3.0
 Werkzeug==3.0.1
 wsproto==1.2.0
+pymongo==3.12.0
+flask_jwt_extended==4.5.3
+bcrypt==3.2.1
+python-dotenv==1.0.0
+dnspython==2.4.2
+timedelta

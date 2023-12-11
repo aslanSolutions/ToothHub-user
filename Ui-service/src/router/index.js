@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-//import jwt_decode from 'jwt-decode';
-//import store from '../store/auth.js';
+import { jwtDecode } from 'jwt-decode';
+import store from '../store';
 
 // Dashboard of users
 import DDashboard from '../views/Dentist/DDashboard.vue';
@@ -33,6 +33,7 @@ const routes = [
   {
     path: '/dentist-dashboard',
     name: 'Dentist-Dashboard',
+    meta: { requiresAuth: true, type: 'Dentist', isDashboard: true },
     components: {
       default: DDashboard,
       Sidebar: Dsidebar,
@@ -42,12 +43,13 @@ const routes = [
   {
     path: '/patient-dashboard',
     name: 'Patient-Dashboard',
+    meta: { requiresAuth: true, type: 'Patient', isDashboard: true },
     components: {
       default: PDashboard,
       Sidebar: PSidebar,
       Rightbar: RightSidebar,
     }
-  },  
+  },
   {
     path: '/',
     name: 'Home',
@@ -73,7 +75,6 @@ const routes = [
       default: Dashboard,
       Sidebar: Sidebar,
       Rightbar: RightSidebar,
-      footer: footer
     },
   },
   {
@@ -109,7 +110,6 @@ const routes = [
     components: {
       default: Dentists,
       sidebar: Sidebar,
-      footer: footer
     },
   },
   {
@@ -118,7 +118,6 @@ const routes = [
     components: {
       default: Patients,
       sidebar: Sidebar,
-      footer: footer
     },
   },
   {
@@ -127,7 +126,6 @@ const routes = [
     components: {
       default: Revenue,
       sidebar: Sidebar,
-      footer: footer
     },
   },
   {
@@ -136,7 +134,6 @@ const routes = [
     components: {
       default: Settings,
       sidebar: Sidebar,
-      footer: footer
     },
   },
   {
@@ -144,7 +141,6 @@ const routes = [
     name: 'Contact',
     components: {
       default: Contact,
-      sidebar: Sidebar,
       footer: footer,
       navbar: Navbar,
     },
@@ -154,7 +150,6 @@ const routes = [
     name: 'About',
     components: {
       default: About,
-      sidebar: Sidebar,
       footer: footer,
       navbar: Navbar,
     },
@@ -166,42 +161,34 @@ const router = createRouter({
   routes,
 });
 
-/*router.beforeEach(async (to, from, next) => {
-  const accessToken = store.state.accessToken;
+router.beforeEach(async (to, from, next) => {
+  const accessToken = store.getters.getAccessToken;
 
-  if (accessToken && isTokenValid(accessToken)) {
-    if (to.meta.userType === 'dentist' && accessToken.userType === 'Dentist') {
-      next();
-    } else if (to.meta.userType === 'patient' && accessToken.userType === 'Patient') {
-      next();
+  if (to.meta.isDashboard) {
+    if (accessToken) {
+      try {
+        const decodedToken = jwtDecode(accessToken);
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+
+        if (decodedToken.exp && currentTimestamp < decodedToken.exp) {
+          if (to.meta.type && to.meta.type !== decodedToken.type) {
+            next('/error'); // Redirect if user type does not match
+          } else {
+            next(); // Proceed if user type matches
+          }
+        } else {
+          // Token expired
+          next('/login');
+        }
+      } catch (error) {
+        console.error('Token validation error:', error);
+        next('/login');
+      }
     } else {
-      next('/error');
+      next('/login');
     }
   } else {
-    next('/login');
+    next(); // Proceed for non-dashboard routes
   }
 });
-
-function isTokenValid(token) {
-  if (!token) {
-    return false;
-  }
-
-  try {
-    const decodedToken = jwt_decode(token);
-
-    if (decodedToken && decodedToken.exp) {
-      const currentTimestamp = Math.floor(Date.now() / 10000);
-
-      if (currentTimestamp < decodedToken.exp) {
-        return true;
-      }
-    }
-  } catch (error) {
-    console.error('Token validation error:', error);
-  }
-
-  return false;
-}*/
-
 export default router;
