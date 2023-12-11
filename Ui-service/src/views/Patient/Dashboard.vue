@@ -39,7 +39,6 @@ export default {
       this.currentDate = now.toLocaleString();
     },
     updateSelectedDate(date) {
-      console.log('Date selected:', date);
       this.selectedDate = date;
     }
   },

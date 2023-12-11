@@ -2,19 +2,23 @@
     <div class="time-picker">
         <div class="date-header">{{ selectedDateFormatted }}</div>
         <div v-if="availabilities.length > 0" class="dentists-container">
-            <div v-for="availability in availabilities" :key="availability.dentist_email" class="dentist-row">
+            <div v-for="(availability, index) in availabilities" :key="index" class="dentist-row">
                 <div class="dentist-email">{{ availability.dentist_email }}</div>
-                <ul class="time-slots">
-                    <li v-for="timeSlot in availability.time_slots" :key="timeSlot.time_slot_id" class="time-slot"
-                        :class="{ 'selected': selectedTimeSlot === timeSlot }" @click="selectTimeSlot(timeSlot)">
-                        <span class="dot"></span>
-                        {{ formatTime(timeSlot.start_time) }}
-                    </li>
-                </ul>
+                <div v-for="(timeSlot, timeIndex) in availability.time_slots"
+                    :key="`${availability.dentist_email}-${timeIndex}`" class="time-slot"
+                    :class="{ 'selected': selectedTimeSlot === timeSlot }"
+                    @click="selectTimeSlot(timeSlot, availability.dentist_email)">
+                    {{ formatTime(timeSlot.start_time) }}
+                </div>
             </div>
+
         </div>
         <div v-else class="no-availability-message">
             There are no available times, would you like to make a wishlist for an appointment?
+            <div class="wishlist-buttons">
+                <button class="add-wishlist-btn" @click="addToWishlist">Add to Wishlist</button>
+                <button class="cancel-btn" @click="cancelWishlist">Cancel</button>
+            </div>
         </div>
         <div v-if="selectedTimeSlot" class="buttons-container">
             <button class="cancel-btn" @click="cancelSelection">Cancel</button>
@@ -25,6 +29,8 @@
   
 <script>
 import axios from 'axios';
+import { mapGetters } from 'vuex';
+
 
 export default {
     props: {
@@ -35,12 +41,13 @@ export default {
             availabilities: [],
             selectedTimeSlot: null,
             selectedDentistEmail: '',
+            patient: '',
+            authToken: ''
         };
     },
     watch: {
         selectedDate(newDate) {
             if (newDate) {
-                console.log('Received new selected date:', newDate);
                 this.fetchTimeSlots(newDate);
             }
         }
@@ -55,24 +62,119 @@ export default {
             }
             return '';
         },
+        ...mapGetters(['getEmail', 'getAccessToken'])
+    },
+    mounted() {
+        this.patient = this.getEmail;
+        this.authToken = this.getAccessToken
     },
     methods: {
+        applySelection() {
+            if (!this.selectedTimeSlot || !this.selectedDentistEmail) {
+                alert("Please select a time slot.");
+                return;
+            }
+
+            const bookingPayload = {
+                patient_email: this.patient,
+                dentist_email: this.selectedDentistEmail,
+                appointment_datetime: this.selectedTimeSlot.start_time
+            };
+
+            axios.post('http://localhost:5002/appointments/', bookingPayload, {
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    console.log('Appointment booked successfully:', response.data);
+                    // You can also handle UI updates here
+                })
+                .catch(error => {
+                    console.error('Error booking appointment:', error);
+                    if (error.response) {
+                        console.error('Server response:', error.response.data);
+                    }
+                });
+        },
         fetchTimeSlots(date) {
             const formattedDate = this.formatDateToYYYYMMDD(date);
             axios.get(`http://localhost:5004/availability/get_timeslots?date=${formattedDate}`)
                 .then(response => {
                     if (response.data && response.data.available_slots) {
-                        this.availabilities = JSON.parse(response.data.available_slots);
+                        const rawSlots = JSON.parse(response.data.available_slots);
+                        // Process the raw slots into 30-minute intervals
+                        this.availabilities = this.create30MinIntervals(rawSlots);
                     } else {
                         console.log('No time slots available for this date.');
                         this.availabilities = [];
                     }
                 })
+
                 .catch(error => {
                     console.error('Error fetching time slots:', error);
                 });
         },
+        addToWishlist() {
+            const payload = {
+                patient_email: this.patient,
+                date: this.formatDateToYYYYMMDD(this.selectedDate)
+            };
 
+
+            axios.post('http://localhost:5006/wishlist/create', payload, {
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`
+                }
+            })
+                .then(response => {
+                    console.log('Wishlist entry created:', response);
+                })
+                .catch(error => {
+                    console.error('Error creating wishlist entry:', error);
+                    if (error.response) {
+                        console.error('Server response:', error.response.data);
+                    }
+                });
+        },
+        create30MinIntervals(rawSlots) {
+            let intervalsByDentist = {};
+            rawSlots.forEach(slot => {
+                const dentistEmail = slot.dentist_email;
+                if (!intervalsByDentist[dentistEmail]) {
+                    intervalsByDentist[dentistEmail] = [];
+                }
+
+                slot.time_slots.forEach(timeSlot => {
+                    let startTime = new Date(timeSlot.start_time);
+                    const endTime = new Date(timeSlot.end_time);
+
+                    while (startTime < endTime) {
+                        let endTimeInterval = new Date(startTime.getTime() + 30 * 60000); // Add 30 minutes
+
+                        if (endTimeInterval > endTime) {
+                            endTimeInterval = endTime;
+                        }
+
+                        intervalsByDentist[dentistEmail].push({
+                            start_time: startTime.toISOString(),
+                            end_time: endTimeInterval.toISOString()
+                        });
+
+                        startTime = endTimeInterval;
+                    }
+                });
+            });
+
+            // Convert the intervalsByDentist object into an array of objects with dentist_email and time_slots array
+            return Object.keys(intervalsByDentist).map(dentistEmail => {
+                return {
+                    dentist_email: dentistEmail,
+                    time_slots: intervalsByDentist[dentistEmail]
+                };
+            });
+        },
         formatDateToYYYYMMDD(date) {
             const d = new Date(date);
             let month = '' + (d.getMonth() + 1);
@@ -88,15 +190,12 @@ export default {
         },
         formatTime(dateTime) {
             const time = new Date(dateTime);
-            return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            return time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
         },
         selectTimeSlot(timeSlot, dentistEmail) {
             this.selectedTimeSlot = timeSlot;
             this.selectedDentistEmail = dentistEmail;
-        },
-        applySelection() {
-            console.log('Time slot selected:', this.selectedTimeSlot);
-            console.log(this.selectedDentistEmail)
+            // ... rest of the method ...
         },
         cancelSelection() {
             console.log('Selection cancelled');
@@ -111,7 +210,7 @@ export default {
     background: #ffffff;
     border-radius: 8px;
     padding: 1rem;
-    width: auto;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -136,14 +235,16 @@ export default {
 
 .dentists-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    width: 100%;
 }
 
 .dentist-row {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin-right: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    width: 100%;
 }
 
 .dentist-email {
@@ -151,31 +252,27 @@ export default {
     margin-bottom: 0.5rem;
 }
 
-.time-slots {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+.time-slots-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
 }
 
 .time-slot {
     background: #00bcd4;
     color: #ffffff;
     margin-bottom: 0.5rem;
+    margin-right: 0.5rem;
     padding: 0.5rem;
     border-radius: 6px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex: 1 1 auto;
+    min-width: 100px;
+    text-align: center;
 }
 
-.dot {
-    height: 10px;
-    width: 10px;
-    background-color: #00e676;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
+.time-slot:nth-child(2n) {
+    margin-right: 0;
 }
 
 .buttons-container {
@@ -190,6 +287,22 @@ export default {
     padding: 0.5rem;
     border: none;
     border-radius: 6px;
+}
+
+.wishlist-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 1rem;
+}
+
+.add-wishlist-btn {
+    background: #4CAF50;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
 }
 
 .cancel-btn {

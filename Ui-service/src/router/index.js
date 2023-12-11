@@ -168,7 +168,6 @@ router.beforeEach(async (to, from, next) => {
     if (accessToken) {
       try {
         const decodedToken = jwtDecode(accessToken);
-        console.log('Decoded Token:', decodedToken);
         const currentTimestamp = Math.floor(Date.now() / 1000);
 
         if (decodedToken.exp && currentTimestamp < decodedToken.exp) {

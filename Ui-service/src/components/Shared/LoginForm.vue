@@ -57,8 +57,7 @@ export default {
                     email: this.email,
                     password: this.password
                 });
-                console.log(response.data)
-                if (response.data && response.data.access_token) {
+               if (response.data && response.data.access_token) {
                     this.updateEmail(response.data.user.email);
                     this.updateType(response.data.user.type); 
                     this.updateAccessToken(response.data.access_token);

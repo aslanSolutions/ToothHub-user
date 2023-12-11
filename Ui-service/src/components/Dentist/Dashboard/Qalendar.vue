@@ -148,37 +148,71 @@ export default {
     },
     async fetchEvents() {
       try {
-        // Replace with the correct endpoint URL
-        const response = await axios.get('http://127.0.0.1:5004/availability/get_availability', {
+        // Fetch availability
+        const availabilityResponse = await axios.get('http://127.0.0.1:5004/availability/get_availability', {
           params: { dentist_email: this.dentist }
         });
+        console.log('Availability Response:', availabilityResponse.data);
 
-        if (response.data && response.data.availability) {
-          // Assuming each item in 'availability' has 'date' and 'time_slots'
-          const events = [];
-          response.data.availability.forEach(availabilityItem => {
-            availabilityItem.time_slots.forEach(slot => {
-              const start = new Date(slot.start_time);
-              const end = new Date(slot.end_time);
+        // Fetch appointments
+        const appointmentsResponse = await axios.get('http://127.0.0.1:5002/appointments/all_appointments', {
+          params: { dentist_email: this.dentist }
+        });
+        console.log('Appointments Response:', appointmentsResponse.data);
 
-              start.setHours(start.getHours() - 1);
-              end.setHours(end.getHours() - 1);
-
-              events.push({
-                start: start,
-                end: end,
-                title: 'Available',
-                class: 'available'
-              });
-            });
-
-          });
-          this.events = events;
-        }
+        // Pass the correct structure to combineEvents
+        // The availability data is nested under 'availability', so we access that key.
+        // The appointments data is an array, so we can pass it directly.
+        this.events = this.combineEvents(availabilityResponse.data.availability, appointmentsResponse.data);
       } catch (error) {
         console.error('Error fetching events:', error);
-        this.showErrorToUser('Failed to fetch available time slots.');
+        this.showErrorToUser('Failed to fetch events.');
       }
+    },
+    combineEvents(availability, appointments) {
+      let events = [];
+
+      // Convert availability and appointments to a comparable format (e.g., timestamps)
+      let availableSlots = availability.map(slot => ({
+        start: new Date(slot.start_time).getTime(),
+        end: new Date(slot.end_time).getTime(),
+        type: 'available'
+      }));
+
+      let bookedSlots = appointments.map(appointment => ({
+        start: new Date(appointment.appointment_datetime).getTime(),
+        end: new Date(appointment.appointment_datetime).getTime() + 30 * 60000, // assuming a 30-minute appointment
+        type: 'booked'
+      }));
+
+      // Remove booked slots from available slots
+      bookedSlots.forEach(booked => {
+        availableSlots = availableSlots.reduce((slots, available) => {
+          // If the booked slot is within the available slot
+          if (booked.start >= available.start && booked.end <= available.end) {
+            // Split the available slot into two parts, before and after the booked slot
+            if (booked.start > available.start) {
+              slots.push({ start: available.start, end: booked.start, type: 'available' });
+            }
+            if (booked.end < available.end) {
+              slots.push({ start: booked.end, end: available.end, type: 'available' });
+            }
+          } else {
+            slots.push(available); // No overlap, keep the available slot as is
+          }
+          return slots;
+        }, []);
+      });
+
+      // Combine the remaining available slots and booked slots into events
+      events = [...availableSlots, ...bookedSlots].map(slot => ({
+        start: new Date(slot.start),
+        end: new Date(slot.end),
+        title: slot.type === 'available' ? 'Available' : 'Booked',
+        class: slot.type
+      }));
+
+      return events;
     },
   },
   mounted() {
@@ -192,14 +226,15 @@ export default {
 </script>
 
 <style scoped>
-/* Example styles */
+/* Example styles *//* Ensure these styles are scoped or correctly targeted to the vue-cal component */
 .vuecal__event.available {
   background-color: #2df29dd4;
 }
 
-.vuecal--event.booked {
-  background-color: #9fcdff;
+.vuecal__event.booked {
+  background-color: #ff6961;
 }
+
 
 .vuecal--event.done {
   background-color: #cfcfcf;

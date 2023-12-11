@@ -1,5 +1,5 @@
 from flask import jsonify
-from flask_jwt_extended import get_jwt, get_jti, create_access_token
+from flask_jwt_extended import get_jwt, get_jti, create_access_token, get_jwt_identity
 from .user_model import AuthedUser
 from .db import authed_collection
 
