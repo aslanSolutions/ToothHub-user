@@ -23,9 +23,10 @@ def post_notification(data):
         data["created_at"] = datetime.utcnow()
         #publishPostNot(data)
         result = notification.insert_one(data)
+        #send_email()
         return data
-    except:
-        return {'message': 'Notification was not sent'}, 404
+    except Exception as e:
+        return {'error': e}, 404
     
 
 @bp.route('/<notification_id>', methods=['GET'])
