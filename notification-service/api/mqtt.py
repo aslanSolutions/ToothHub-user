@@ -8,9 +8,7 @@ socketio = SocketIO()
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected with result code " + str(rc))
-        print("User data: " + str(userdata))
-        client.subscribe("patient")
-        client.subscribe("dentist")
+        client.subscribe("notification")
     else:
         print("Connection failed with code " + str(rc))
 

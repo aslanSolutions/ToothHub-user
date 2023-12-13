@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, jsonify, request
 from apifairy import body, response, other_responses
 from .schema import NotificationSchema
@@ -16,16 +17,22 @@ notifications_schema = NotificationSchema(many = True)
 @bp.route('/', methods=['POST'])
 @body(notification_schema)
 @response(notification_schema,200)
-@other_responses({400: 'Invalid request.'})
 def post_notification(data):
     """Create a notification"""
     try:
         data["created_at"] = datetime.utcnow()
-        #publishPostNot(data)
+
         result = notification.insert_one(data)
+        try:
+            message_json = json.dumps(data, default=lambda x: x.isoformat() if isinstance(x, datetime) else None)
+            publishPostNot(json.dumps(message_json))
+        except Exception as e:
+            print(e)
+            return {'Broker error': e}, 501
         return data
-    except:
-        return {'message': 'Notification was not sent'}, 404
+    except Exception as e:
+        
+        return {'Error': e}, 501
     
 
 @bp.route('/<notification_id>', methods=['GET'])
