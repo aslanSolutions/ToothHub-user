@@ -2,10 +2,12 @@ import json
 from flask import Blueprint, jsonify, request
 from apifairy import body, response, other_responses
 from .schema import NotificationSchema
-from .broker_routes import publishPostNot
 from .db import notification
 from bson import ObjectId
 from datetime import datetime
+from .broker_routes import publishPostNot
+from flask import current_app as app
+
 
 
 bp = Blueprint('notification', __name__, url_prefix='/notifications')
@@ -18,22 +20,16 @@ notifications_schema = NotificationSchema(many = True)
 @body(notification_schema)
 @response(notification_schema,200)
 def post_notification(data):
-    """Create a notification"""
+    """Post a notification"""
     try:
         data["created_at"] = datetime.utcnow()
-
+        with app.app_context():
+            from .mail import send_email
+            send_email(data)
         result = notification.insert_one(data)
-        try:
-            message_json = json.dumps(data, default=lambda x: x.isoformat() if isinstance(x, datetime) else None)
-            publishPostNot(json.dumps(message_json))
-        except Exception as e:
-            print(e)
-            return {'Broker error': e}, 501
         return data
     except Exception as e:
-        
         return {'Error': e}, 501
-    
 
 @bp.route('/<notification_id>', methods=['GET'])
 @response(notification_schema,200)
@@ -80,3 +76,17 @@ def delete_notification(notification_id):
         return {"message":"Notification deleted successfully"}
     else:
         return jsonify({'message': 'Notification not found'}), 404
+    
+
+
+def create_notification(data):
+    """Create a notification"""
+    try:
+        data["created_at"] = datetime.utcnow()
+        with app.app_context():
+            from .mail import send_email
+            send_email(data)
+        result = notification.insert_one(data)
+        return data
+    except Exception as e:
+        return {'Error': e}, 501
