@@ -10,18 +10,17 @@ def publishPostNot(payload):
     except Exception as e:
         return json({'error': str(e)}), 500
 
-def on_message(client, userdata, msg): # Just printing the message resived for now.
+def on_message(client, userdata, msg):
     try:
-        # Deserialize the outer JSON string to an inner JSON string
-        inner_json_string = json.loads(msg.payload)
-
-        # Deserialize the inner JSON string to a Python dictionary
-        middle_json_string = json.loads(inner_json_string)
-        payload_dict = json.loads( middle_json_string)
+        payload_dict = json.loads(msg.payload)
+        payload_dict['topic'] = msg.topic
         app = flask_app
         with app.app_context():
-            from .mail import send_email
-            send_email(payload_dict)
+            try:
+                from .routes import create_notification
+                print(create_notification(payload_dict))
+            except Exception as e:
+                print("Error decoding JSON:", e) 
     except json.JSONDecodeError as e:
         print("Error decoding JSON:", e)
 

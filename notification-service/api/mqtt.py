@@ -1,14 +1,15 @@
 import paho.mqtt.client as mqtt
-from flask_socketio import SocketIO
 
 mqtt_client = mqtt.Client(client_id="patient_noti", protocol=mqtt.MQTTv311)
 mqtt_client.tls_set(tls_version=mqtt.ssl.PROTOCOL_TLS)
-socketio = SocketIO()
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected with result code " + str(rc))
-        client.subscribe("notification")
+        client.subscribe("booking/create")
+        client.subscribe("booking/delete")
+        client.subscribe("booking/update")
+        client.subscribe("whishList")
     else:
         print("Connection failed with code " + str(rc))
 

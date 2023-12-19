@@ -20,8 +20,20 @@ with app.app_context():
 
 def send_email(data):
     with app.app_context():
-        print(data['receiver'][0])
-        msg = Message(subject=data['subject'], recipients=[data['receiver'][0], data['receiver'][1]])
-        msg.body = data['description']
-        mailObj.send(msg)
-        return "Message sent!"
+        try:
+            if data['topic'] == 'booking/create':
+                pass
+            elif data['topic'] == 'booking/update':
+                pass
+            elif data['topic'] == 'booking/delete':
+                pass
+            else:
+                print("The data got to send_email(): ", data)
+                msg = Message(subject=data['subject'], recipients=[data['receiver'][0], data['receiver'][1]])
+                msg.body = data['description']
+                mailObj.send(msg)
+                print("Message sent!")
+                return "Message sent!"
+        except Exception as e:
+                print("Error sending emails: ", e)
+                return f"Error sending emails: {str(e)}"
