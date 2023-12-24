@@ -89,4 +89,4 @@ def create_notification(data):
         result = notification.insert_one(data)
         return data
     except Exception as e:
-        return {'Error': e}, 501
+        return json({'error': str(e)})

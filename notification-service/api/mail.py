@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 from flask_mail import Mail
 from flask_mail import Message
@@ -20,20 +21,47 @@ with app.app_context():
 
 def send_email(data):
     with app.app_context():
+        # Format the datetime object
+        appointment_datetime_str = data['appointment_datetime']
+        parsed_datetime = datetime.fromisoformat(appointment_datetime_str)
+        formatted_datetime = parsed_datetime.strftime('%a, %d %b %Y %H:%M:%S GMT')
+        
         try:
-            if data['topic'] == 'booking/create':
-                pass
-            elif data['topic'] == 'booking/update':
-                pass
-            elif data['topic'] == 'booking/delete':
-                pass
+            if data['topic'] == 'create/booking':
+                try:
+                    json_body = {"message": f"You have an appointment scheduled for you on {formatted_datetime}. Appointment ID: {data['correlation_id']}"}
+                    msg = Message(subject='Appointment scheduled', recipients=[data['dentist_email'], data['patient_email']])
+                    msg.body = json.dumps(json_body['message'])
+                    mailObj.send(msg)
+                    return "Message sent!"
+                except Exception as e:
+                    return json({'error': str(e)})
+            elif data['topic'] == 'update/booking':
+                try:
+                    json_body = {"message": f"The appointment scheduled for you was updated to be on {formatted_datetime}. Appointment ID: {data['correlation_id']}"}
+                    msg = Message(subject='Appointment scheduled updated', recipients=[data['dentist_email'], data['patient_email']])
+                    msg.body = json.dumps(json_body['message'])
+                    mailObj.send(msg)
+                    return "Message sent!"
+                except Exception as e:
+                    return json({'error': str(e)})
+            elif data['topic'] == 'delete/booking':
+                try:
+                    json_body = {"message": f"Your appointment scheduled for you on {formatted_datetime} was deleted. Appointment ID: {data['correlation_id']}"}
+                    msg = Message(subject='Appointment scheduled deleted', recipients=[data['dentist_email'], data['patient_email']])
+                    msg.body = json.dumps(json_body['message'])
+                    mailObj.send(msg)
+                    return "Message sent!"
+                except Exception as e:
+                    return json({'error': str(e)})
             else:
-                print("The data got to send_email(): ", data)
-                msg = Message(subject=data['subject'], recipients=[data['receiver'][0], data['receiver'][1]])
-                msg.body = data['description']
-                mailObj.send(msg)
-                print("Message sent!")
-                return "Message sent!"
+                try:
+                    json_body = {"message": f"You have an appointment scheduled for you on {formatted_datetime}. Appointment ID: {data['correlation_id']}"}
+                    msg = Message(subject='Appointment scheduled', recipients=[data['dentist_email'], data['patient_email']])
+                    msg.body = json.dumps(json_body['message'])
+                    mailObj.send(msg)
+                    return "Message sent!"
+                except Exception as e:
+                    return json({'error': str(e)})
         except Exception as e:
-                print("Error sending emails: ", e)
-                return f"Error sending emails: {str(e)}"
+                return json({'error': str(e)})
