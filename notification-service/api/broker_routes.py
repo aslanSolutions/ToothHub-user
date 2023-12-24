@@ -12,15 +12,18 @@ def publishPostNot(payload):
 
 def on_message(client, userdata, msg):
     try:
-        payload_dict = json.loads(msg.payload)
-        payload_dict['topic'] = msg.topic
-        app = flask_app
-        with app.app_context():
-            try:
-                from .routes import create_notification
-                print(create_notification(payload_dict))
-            except Exception as e:
-                print("Error decoding JSON:", e) 
+        json_payload = json.loads(msg.payload)
+        payload_dict = json.loads(json_payload)
+        if payload_dict['acknowledgment'] == 'True':
+            app = flask_app
+            with app.app_context():
+                try:
+                    from .routes import create_notification
+                    create_notification(payload_dict)
+                except Exception as e:
+                    print("Error decoding JSON:", e) 
+        else:
+            pass
     except json.JSONDecodeError as e:
         print("Error decoding JSON:", e)
 
