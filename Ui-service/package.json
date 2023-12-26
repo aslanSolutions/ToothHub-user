@@ -26,6 +26,7 @@
     "vue-resource": "^1.5.3",
     "vue-router": "^4.2.5",
     "vue3-datepicker": "^0.4.0",
+    "vue3-google-maps": "^0.0.1",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
