@@ -7,11 +7,13 @@ import DDashboard from '../views/Dentist/DDashboard.vue';
 import DAppointments from '../views/Dentist/DAppointments.vue'
 import PDashboard from '../views/Patient/Dashboard.vue';
 import Dashboard from '../views/Dashboard.vue';
+
 // Pages
 import Dentists from '../views/Dentists.vue';
 import Patients from '../views/Patients.vue';
 import Revenue from '../views/Revenue.vue';
-import Settings from '../views/Settings.vue';
+import PProfile from '../views/Patient/PProfile.vue';
+import PAppointments from '../views/Patient/PAppointments.vue';
 import Home from '../views/Home.vue';
 import Login from '@/components/Shared/LoginForm.vue';
 import Register from '@/components/patinet/RegistrationForm.vue';
@@ -46,8 +48,7 @@ const routes = [
     meta: { requiresAuth: true, type: 'Patient', isDashboard: true },
     components: {
       default: PDashboard,
-      Sidebar: PSidebar,
-      Rightbar: RightSidebar,
+      Sidebar: PSidebar
     }
   },
   {
@@ -100,7 +101,7 @@ const routes = [
     name: 'DAppointments',
     components: {
       default: DAppointments,
-      sidebar: Sidebar,
+      Sidebar: Dsidebar,
       footer: footer
     },
   },
@@ -129,11 +130,11 @@ const routes = [
     },
   },
   {
-    path: '/Settings',
-    name: 'Settings',
+    path: '/Profile',
+    name: 'PProfile',
     components: {
-      default: Settings,
-      sidebar: Sidebar,
+      default: PProfile,
+      Sidebar: PSidebar
     },
   },
   {
@@ -152,6 +153,23 @@ const routes = [
       default: About,
       footer: footer,
       navbar: Navbar,
+    },
+  },
+  {
+    path: '/PAppointments',
+    name: 'PAppointments',
+    components: {
+      default: PAppointments,
+      Sidebar: PSidebar
+    },
+  },
+  {
+    path: '/',
+    name: 'Services',
+    components: {
+      default: Service,
+      navbar: Navbar,
+      Sidebar: PSidebar
     },
   }
 ];

@@ -17,7 +17,7 @@
             <p>{{ appointment.service }}</p>
             <p>{{ appointment.appointment_datetime }}</p>
             <p>{{ appointment.clinic }}</p>
-            <p>{{ appointment.patient_email }}</p>
+            <p>{{ appointment.dentist_email }}</p>
             <p>Status: {{ appointment.status }}</p>
           </div>
         </div>
@@ -28,7 +28,7 @@
             <p>{{ appointment.service }}</p>
             <p>{{ appointment.appointment_datetime }}</p>
             <p>{{ appointment.clinic }}</p>
-            <p>{{ appointment.patient_email }}</p>
+            <p>{{ appointment.dentist_email }}</p>
             <p>Status: {{ appointment.status }}</p>
           </div>
         </div>
@@ -72,7 +72,7 @@
             service: `Mock Service ${i + 1}`,
             appointment_datetime: new Date(currentDate.getTime() + i * 3600000).toLocaleString(),
             clinic: `Mock Clinic ${i + 1}`,
-            patient_email: `mock_dentist${i + 1}@example.com`,
+            dentist_email: `mock_dentist${i + 1}@example.com`,
             status,
           };
           mockAppointments.push(appointment);
