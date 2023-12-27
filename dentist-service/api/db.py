@@ -14,6 +14,7 @@ try:
     users = db.users
     services = db.services
     about = db.about
+    clinic = db.clinic
     print("Connected to the database.")
 except Exception as e:
     print(f"Error connecting to the database: {e}")

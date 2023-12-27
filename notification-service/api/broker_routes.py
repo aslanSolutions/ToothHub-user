@@ -1,6 +1,7 @@
 import json
 from .mqtt import mqtt_client
 from . import flask_app
+from .util import create_notification
 
 
 def publishPostNot(payload):
@@ -10,21 +11,35 @@ def publishPostNot(payload):
     except Exception as e:
         return json({'error': str(e)}), 500
 
+
 def on_message(client, userdata, msg):
-    try:
-        json_payload = json.loads(msg.payload)
-        payload_dict = json.loads(json_payload)
-        if payload_dict['acknowledgment'] == 'True':
-            app = flask_app
-            with app.app_context():
+    with flask_app.app_context():
+        try:
+            decoded_payload = msg.payload.decode("utf-8")
+            print("Decoded Payload:", decoded_payload)
+
+            # First parse: Should give you a string if double-encoded
+            intermediate_payload = json.loads(decoded_payload)
+
+            # Second parse: Only if intermediate_payload is a string
+            if isinstance(intermediate_payload, str):
+                json_payload = json.loads(intermediate_payload)
+            else:
+                json_payload = intermediate_payload
+
+            if isinstance(json_payload, dict):
+                acknowledgment = json_payload.get('acknowledgment', False)
+
+            if acknowledgment:
+                json_payload['topic'] = msg.topic
                 try:
-                    from .routes import create_notification
-                    create_notification(payload_dict)
+                    create_notification(json_payload)
                 except Exception as e:
-                    print("Error decoding JSON:", e) 
-        else:
-            pass
-    except json.JSONDecodeError as e:
-        print("Error decoding JSON:", e)
+                    print("Error in create_notification:", e)
+            else:
+                print("Acknowledgment is not True.")
+        except json.JSONDecodeError as e:
+            print("Error decoding JSON:", e)
+
 
 mqtt_client.on_message = on_message
