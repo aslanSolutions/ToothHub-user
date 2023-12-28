@@ -3,24 +3,26 @@
       <div class="text-container">
         <h1 class="custom-h1">
           <img src="../../assets/Logo.png" alt="logo" class="logo">
-          TOOTHTALES
+          <router-link class="link" active-class="active-class" :to="{ name: 'Home' }">TOOTHTALES</router-link>
         </h1>
         <p class="custom-p">Where Every Smile Has a Story.</p>
       </div>
-  
       <div class="icon-container">
         <div class="icon">
           <img src="../../assets/DashIcon.png" alt="Dashboard Icon" class="icon-img" />
-          <h1 class="icon-text">Dashboard</h1>
+          <router-link class="link" active-class="active-class" exact :to="{ name: 'Patient-Dashboard' }">Dashboard</router-link>
         </div>
         <div class="icon">
           <img src="../../assets/AppIcon1.png" alt="Appointments Icon" class="icon-img" />
-          <h1 class="icon-text">My Appointment</h1>
+          <router-link class="link" active-class="active-class" exact :to="{ name: 'PAppointments' }">My Appointments</router-link>
         </div>
-  
+        <div class="icon">
+          <img src="../../assets/SetIcon1.png" alt="Services Icon" class="icon-img" />
+          <router-link class="link" active-class="active-class" exact :to="{ name: 'Services' }">Services</router-link>
+        </div>  
         <div class="icon">
           <img src="../../assets/SetIcon1.png" alt="Settings Icon" class="icon-img" />
-          <h1 class="icon-text">Settings</h1>
+          <router-link class="link" active-class="active-class" exact :to="{ name: 'PProfile' }">Profile</router-link>
         </div>
       </div>
     </div>
@@ -110,6 +112,12 @@
     font-weight: 500;
     font-size: 20px;
     color: #FFFFFF;
+  }
+
+  .link.active-class {
+    font-weight: 600;
+    font-size: 22px;
+
   }
   
   @media screen and (max-width: 768px) {
