@@ -8,7 +8,6 @@ from . import mail
 
 def create_notification(data):
     """Create a notification"""
-    print("Topic: ", data['topic'])
     try:
         data["created_at"] = datetime.utcnow()
         print("Step 3")
@@ -35,21 +34,39 @@ def send_email(app, data):
             msg = Message()
 
             # Set the subject, recipients, and body of the email based on the data
-            if data['topic'] == 'booking/confirm':
+            if data['topic'] == 'booking/create':
                 msg.subject = 'Appointment Scheduled'
                 msg.recipients = [data['dentist_email'], data['patient_email']]
-                msg.body = f"You have an appointment scheduled for {formatted_datetime}. Appointment ID: {data['correlation_id']}"
+                msg.body = f"You have an appointment scheduled for {formatted_datetime}."
                 mail.send(msg)
             elif data['topic'] == 'booking/update':
                 msg.subject = 'Appointment Updated'
                 msg.recipients = [data['dentist_email'], data['patient_email']]
-                msg.body = f"The appointment scheduled for {formatted_datetime} was updated. Appointment ID: {data['correlation_id']}"
+                msg.body = f"The appointment scheduled for {formatted_datetime} was updated."
                 mail.send(msg)
             elif data['topic'] == 'booking/delete':
                 msg.subject = 'Appointment Cancelled'
                 msg.recipients = [data['dentist_email'], data['patient_email']]
-                msg.body = f"Your appointment scheduled for {formatted_datetime} was cancelled. Appointment ID: {data['correlation_id']}"
+                msg.body = f"Your appointment scheduled for {formatted_datetime} was cancelled."
                 mail.send(msg)
+            elif data['topic'] == 'wishList':
+                msg.subject = 'Available Time'
+                if 'wishLists' in data and isinstance(data['wishLists'], list):
+                    msg.recipients = data['wishLists']
+                    formatted_datetime = "..."
+
+                    msg.body = f"You deserved time now is available. Data: {formatted_datetime}"
+                    try:
+                        mail.send(msg)
+                        print("Emails sent successfully")
+                    except Exception as e:
+                        print(f"Failed to send emails: {e}")
+                else:
+                    print("No valid wishlist data to send emails")
+                    msg.subject = 'Notification'
+                    msg.recipients = [data['patient_email']]
+                    msg.body = "You have a new notification."
+                    mail.send(msg)
             else:
                 # Handle other cases or set a default case
                 msg.subject = 'Notification'

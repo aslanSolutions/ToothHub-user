@@ -31,7 +31,6 @@ def on_message(client, userdata, msg):
                 acknowledgment = json_payload.get('acknowledgment', False)
 
             if acknowledgment:
-                json_payload['topic'] = msg.topic
                 try:
                     create_notification(json_payload)
                 except Exception as e:
