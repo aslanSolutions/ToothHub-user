@@ -82,13 +82,9 @@ export default {
 .container {
     display: flex;
     justify-content: flex-start;
-    /* Adjust as needed */
-    padding: 20px;
+    padding: 60px;
     height: 100vh;
-    /* Adjust as needed */
     margin-top: 5rem;
-    transform: translateX(35%);
-
 }
 
 .headline {
@@ -109,7 +105,6 @@ h1 {
     margin-bottom: 0;
     /* Removes the bottom margin from the h1 tag */
     padding-bottom: 0;
-    /* Optional: Adjusts the bottom padding */
 
 }
 
@@ -119,7 +114,6 @@ p {
     margin-top: 0;
     /* Removes the top margin from the p tag */
     padding-top: 0;
-    /* Optional: Adjusts the top padding */
 }
 
 .account-info {
