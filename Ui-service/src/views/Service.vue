@@ -68,6 +68,7 @@ export default {
       try {
         const response = await services.getAllServices()
         this.services = response.data
+        console.log(response)
         this.isLoading = false
       } catch (error) {
         console.error('Error fetching services:', error)

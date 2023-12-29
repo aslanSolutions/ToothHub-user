@@ -15,6 +15,7 @@
           <li><router-link class="link" active-class="active-class" :to="{ name: '' }">Gallery</router-link></li>
           <li><router-link class="link" active-class="active-class" :to="{ name: 'Contact' }">Contact</router-link></li>
           <li v-if="isLoggedIn" @click="logout" class="logout-btn">Logout</li>
+          
         </ul>
 
         <div class="icon" v-if="mobile">

@@ -3,7 +3,7 @@
     <div class="text-container">
       <h1 class="custom-h1">
         <img src="../../../assets/Logo.png" alt="logo" class="logo" />
-        TOOTHTALES
+        <router-link class="link" active-class="active-class" :to="{ name: 'Home' }">TOOTHTALES</router-link>
       </h1>
       <p class="custom-p">Where Every Smile Has a Story.</p>
     </div>
@@ -11,17 +11,20 @@
     <div class="icon-container">
       <div class="icon">
         <img src="../../../assets/DashIcon.png" alt="Dashboard Icon" class="icon-img" />
-        <h1 class="icon-text">Dashboard</h1>
+        <router-link class="link" active-class="active-class" exact :to="{ name: 'Dentist-Dashboard' }">Dashboard</router-link>
       </div>
 
       <div class="icon">
         <img src="../../../assets/AppIcon1.png" alt="Appointments Icon" class="icon-img" />
-        <h1 class="icon-text">Appointments</h1>
+        <router-link class="link" active-class="active-class" exact :to="{ name: 'DAppointments' }">Appointments</router-link>
       </div>
-
       <div class="icon">
         <img src="../../../assets/SetIcon1.png" alt="Settings Icon" class="icon-img" />
-        <h1 class="icon-text">Settings</h1>
+        <router-link class="link" active-class="active-class" exact :to="{ name: 'Services' }">Services</router-link>
+      </div>
+      <div class="icon">
+        <img src="../../../assets/SetIcon1.png" alt="Settings Icon" class="icon-img" />
+        <router-link class="link" active-class="active-class" exact :to="{ name: 'PProfile' }">Profile</router-link>
       </div>
     </div>
   </div>
