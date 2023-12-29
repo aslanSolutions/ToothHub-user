@@ -3,6 +3,7 @@ from apifairy import APIFairy
 from flask_marshmallow import Marshmallow
 from .routes import bp
 from .service_routes import service_bp
+from .clinic_routes import clinic_bp
 from .marsh_schema import ma
 from flask_cors import CORS
 
@@ -22,5 +23,6 @@ def create_app():
     # Register the dentsit blueprint
     app.register_blueprint(bp)
     app.register_blueprint(service_bp)
+    app.register_blueprint(clinic_bp)
 
     return app
