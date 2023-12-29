@@ -24,7 +24,7 @@ def post_notification(data):
     try:
         data["created_at"] = datetime.utcnow()
         with app.app_context():
-            from .mail import send_email
+            from .util import send_email
             send_email(data)
         result = notification.insert_one(data)
         return data
@@ -77,16 +77,3 @@ def delete_notification(notification_id):
     else:
         return jsonify({'message': 'Notification not found'}), 404
     
-
-
-def create_notification(data):
-    """Create a notification"""
-    try:
-        data["created_at"] = datetime.utcnow()
-        with app.app_context():
-            from .mail import send_email
-            send_email(data)
-        result = notification.insert_one(data)
-        return data
-    except Exception as e:
-        return json({'error': str(e)})
