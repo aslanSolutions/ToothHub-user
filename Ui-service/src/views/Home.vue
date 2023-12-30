@@ -1,7 +1,8 @@
 <template>
-    <main class="home-page">>
+    <main class="home-page">
         <headSec />
         <servicePhoto />
+        <dentistMap />
         <whoAreWeSec />
     </main>
 </template>
@@ -10,17 +11,19 @@
     import headSec from '@/components/Shared/home/headSection.vue'
     import servicePhoto from '@/components/Shared/home/servicePhoto.vue'
     import whoAreWeSec from '@/components/Shared/home/whoAreWeSec.vue'
+    import dentistMap from '@/components/map.vue'
 
     export default {
         components: {
             headSec,
             servicePhoto,
+            dentistMap,
             whoAreWeSec
         }
     }
 </script>
 
-<style scoped>
+<style>
 .home-page {
     padding: 1%;
     background-color: rgb(255, 255, 255);
