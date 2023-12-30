@@ -190,9 +190,9 @@ router.beforeEach(async (to, from, next) => {
 
         if (decodedToken.exp && currentTimestamp < decodedToken.exp) {
           if (to.meta.type && to.meta.type !== decodedToken.type) {
-            next('/error'); // Redirect if user type does not match
+            next('/error');
           } else {
-            next(); // Proceed if user type matches
+            next();
           }
         } else {
           // Token expired
