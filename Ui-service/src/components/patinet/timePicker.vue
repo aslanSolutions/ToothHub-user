@@ -8,7 +8,7 @@
                     :key="`${availability.dentist_email}-${timeIndex}`" class="time-slot"
                     :class="{ 'selected': selectedTimeSlot === timeSlot }"
                     @click="selectTimeSlot(timeSlot, availability.dentist_email)">
-                    {{ formatTime(timeSlot.start_time) }}
+                    {{ timeSlot.start_time }} - {{ timeSlot.end_time }}
                 </div>
             </div>
 
@@ -74,13 +74,17 @@ export default {
                 alert("Please select a time slot.");
                 return;
             }
+            console.log("Selected date:", this.selectedDate)
+            const selectedDateStr = `${this.selectedDate.getFullYear()}-${(this.selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${this.selectedDate.getDate().toString().padStart(2, '0')}`;
+            const time24h = this.convertTo24Hour(this.selectedTimeSlot.start_time);
 
+            const appointmentDateTime = `${selectedDateStr}T${time24h}`;
             const bookingPayload = {
                 patient_email: this.patient,
                 dentist_email: this.selectedDentistEmail,
-                appointment_datetime: this.selectedTimeSlot.start_time
+                appointment_datetime: appointmentDateTime
             };
-
+            console.log("Sent date:", bookingPayload)
             axios.post('http://localhost:5002/appointments/', bookingPayload, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`,
@@ -89,31 +93,12 @@ export default {
             })
                 .then(response => {
                     console.log('Appointment booked successfully:', response.data);
-                    // You can also handle UI updates here
                 })
                 .catch(error => {
                     console.error('Error booking appointment:', error);
                     if (error.response) {
                         console.error('Server response:', error.response.data);
                     }
-                });
-        },
-        fetchTimeSlots(date) {
-            const formattedDate = this.formatDateToYYYYMMDD(date);
-            axios.get(`http://localhost:5004/availability/get_timeslots?date=${formattedDate}`)
-                .then(response => {
-                    if (response.data && response.data.available_slots) {
-                        const rawSlots = JSON.parse(response.data.available_slots);
-                        // Process the raw slots into 30-minute intervals
-                        this.availabilities = this.create30MinIntervals(rawSlots);
-                    } else {
-                        console.log('No time slots available for this date.');
-                        this.availabilities = [];
-                    }
-                })
-
-                .catch(error => {
-                    console.error('Error fetching time slots:', error);
                 });
         },
         addToWishlist() {
@@ -137,43 +122,56 @@ export default {
                         console.error('Server response:', error.response.data);
                     }
                 });
-        },
-        create30MinIntervals(rawSlots) {
-            let intervalsByDentist = {};
-            rawSlots.forEach(slot => {
-                const dentistEmail = slot.dentist_email;
-                if (!intervalsByDentist[dentistEmail]) {
-                    intervalsByDentist[dentistEmail] = [];
+        }, fetchTimeSlots() {
+            const formattedDate = this.formatDateToYYYYMMDD(this.selectedDate);
+            const endpoint = `http://127.0.0.1:5004/availability/get_timeslots`;
+
+            axios.get(endpoint, {
+                params: {
+                    date: formattedDate,
+                    booked: false
                 }
-
-                slot.time_slots.forEach(timeSlot => {
-                    let startTime = new Date(timeSlot.start_time);
-                    const endTime = new Date(timeSlot.end_time);
-
-                    while (startTime < endTime) {
-                        let endTimeInterval = new Date(startTime.getTime() + 30 * 60000); // Add 30 minutes
-
-                        if (endTimeInterval > endTime) {
-                            endTimeInterval = endTime;
-                        }
-
-                        intervalsByDentist[dentistEmail].push({
-                            start_time: startTime.toISOString(),
-                            end_time: endTimeInterval.toISOString()
-                        });
-
-                        startTime = endTimeInterval;
+            })
+                .then(response => {
+                    if (response.data && response.data.available_slots) {
+                        const availableSlots = JSON.parse(response.data.available_slots);
+                        this.availabilities = availableSlots.map(slot => ({
+                            dentist_email: slot.dentist_email,
+                            date: formattedDate,
+                            time_slots: slot.time_slots.map(timeSlot => ({
+                                start_time: this.formatTimeToLocal(timeSlot.start_time),
+                                end_time: this.formatTimeToLocal(timeSlot.end_time)
+                            }))
+                        }));
+                    } else {
+                        this.availabilities = [];
                     }
+                })
+                .catch(error => {
+                    console.error('Error fetching time slots:', error);
                 });
-            });
+        }, convertTo24Hour(time12h) {
+            const [time, modifier] = time12h.split(' ');
+            let [hours, minutes] = time.split(':');
+            if (hours === '12') {
+                hours = '00';
+            }
+            if (modifier === 'PM') {
+                hours = parseInt(hours, 10) + 12;
+            }
+            return `${hours}:${minutes}:00`;
+        },
+        formatTimeToLocal(dateTime) {
+            if (!dateTime) return 'Invalid time';
 
-            // Convert the intervalsByDentist object into an array of objects with dentist_email and time_slots array
-            return Object.keys(intervalsByDentist).map(dentistEmail => {
-                return {
-                    dentist_email: dentistEmail,
-                    time_slots: intervalsByDentist[dentistEmail]
-                };
-            });
+            const time = new Date(dateTime + 'Z');
+
+            const hours = time.getUTCHours();
+            const minutes = time.getUTCMinutes();
+            const hours12 = hours % 12 || 12;
+            const suffix = hours < 12 ? 'AM' : 'PM';
+
+            return `${hours12.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${suffix}`;
         },
         formatDateToYYYYMMDD(date) {
             const d = new Date(date);
@@ -188,14 +186,9 @@ export default {
 
             return [year, month, day].join('-');
         },
-        formatTime(dateTime) {
-            const time = new Date(dateTime);
-            return time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
-        },
         selectTimeSlot(timeSlot, dentistEmail) {
             this.selectedTimeSlot = timeSlot;
             this.selectedDentistEmail = dentistEmail;
-            // ... rest of the method ...
         },
         cancelSelection() {
             console.log('Selection cancelled');
@@ -254,20 +247,23 @@ export default {
 
 .time-slots-container {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    flex-direction: column;
+    align-items: center;
 }
 
 .time-slot {
-    background: #00bcd4;
-    color: #ffffff;
-    margin-bottom: 0.5rem;
-    margin-right: 0.5rem;
-    padding: 0.5rem;
-    border-radius: 6px;
-    cursor: pointer;
-    flex: 1 1 auto;
-    min-width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    max-width: 250px;
+    height: 50px;
+    background-color: #00bcd4;
+    color: white;
+    border-radius: 8px;
+    box-sizing: border-box;
     text-align: center;
 }
 
