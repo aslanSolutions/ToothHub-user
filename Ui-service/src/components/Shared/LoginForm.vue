@@ -49,7 +49,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions(['updateEmail', 'updateType', 'updateAccessToken']),
+        ...mapActions(['updateEmail', 'updateType', 'updateAccessToken', 'updateIsLoggedIn']),
 
         async submitForm() {
             try {
@@ -61,9 +61,10 @@ export default {
                     this.updateEmail(response.data.user.email);
                     this.updateType(response.data.user.type); 
                     this.updateAccessToken(response.data.access_token);
+                    this.updateIsLoggedIn(true);
 
                     if (response.data.user.type === 'Patient') {
-                        this.$router.push('/patient-dashboard');
+                        this.$router.push('/');
                     } else if (response.data.user.type === 'Dentist') {
                         this.$router.push('/dentist-dashboard');
                     }

@@ -1,23 +1,15 @@
 <template>
   <div class="service-card">
-    <!-- * <div v-if="isLoggedIn && (role === 'Admin')" class="delete-button" @click="handleDelete">
-      <i class="fas fa-times-circle"></i>
-    </div>
-    <div v-if="isLoggedIn && (role === 'Admin')" class="delete-button" style="margin-left: 30px;" @click="handleEdit">
-      <i class="fas fa-pencil-alt"></i>
-    </div>  -->
     <img :src="decodeImage(service.image)" alt="Service Image" />
     <div class="NamePrice">
       <h2 class="name">{{ service.name }}</h2>
       <p class="price">${{ service.price }}</p>
     </div>
     <p class="description">{{ service.description }}</p>
-    <button class="booking">Book</button>
   </div>
 </template>
 
 <script>
-// import { mapState } from 'vuex'
 import { services } from '@/api/serviceApi'
 
 export default {
@@ -27,9 +19,6 @@ export default {
       required: true
     }
   },
-  //computed: {
-    //...mapState(['isLoggedIn', 'role'])
-  //},
   methods: {
     decodeImage(base64Data) {
       if (base64Data) {
@@ -67,8 +56,8 @@ export default {
   height: 450px;
   box-shadow: 0px 4px 50px 0px rgba(0, 0, 0, 0.07);
   backdrop-filter: blur(10px);
-  border-top-left-radius: 30px; /* Adjust the value based on your preference */
-  border-top-right-radius: 30px; /* Adjust the value based on your preference */
+  border-top-left-radius: 30px; 
+  border-top-right-radius: 30px; 
 }
 
 .service-card img {

@@ -25,7 +25,7 @@
 .app {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 110vh;
 }
 
 .content-area {

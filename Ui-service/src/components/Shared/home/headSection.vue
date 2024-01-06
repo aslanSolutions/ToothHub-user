@@ -11,30 +11,17 @@
       <p class="text-lg text-white text-center">
             <span class="highlight">Duis aute irure dolor in reprehenderit <br> in voluptate velit</span>
       </p>
-      <button class="learn-more-button">Learn more</button>
-    </div>
-
-    <div class="booking-form-position">
-      <BookingForm />
+      <button class="learn-more-button"><router-link class="link" active-class="active-class" :to="{ name: 'About' }">Learn more</router-link></button>
+      
     </div>
   </div>
 </template>
-
-<script>
-import BookingForm from './bookingForm.vue';
-
-export default {
-  components: {
-    BookingForm
-  }
-};
-</script>
 
 <style scoped>
 .header-section {
   position: relative;
   width: 100%;
-  height: 100vh; /* Adjust height as needed */
+  height: 100vh;
 }
 
 .background-overlay {
@@ -80,18 +67,5 @@ export default {
   border-radius: 0.5rem;
   cursor: pointer;
   font-size: 1rem;
-}
-
-.booking-form-position {
-  background-color: rgb(255, 255, 255);
-  position: absolute;
-  display: flexbox;
-  right: 0;
-  bottom: 0;
-  z-index: 3;
-  width: 60%;
-  border-top-left-radius: 50px;
-  border-bottom-left-radius: 50px;
-  border-top-right-radius: 50px; /* Adjust the value based on your preference */
 }
 </style>

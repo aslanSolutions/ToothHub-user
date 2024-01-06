@@ -22,12 +22,11 @@ export default {
   },
   methods: {
     submitForm() {
-      // Manual form validation logic
-      console.log("Button pressed")
       if (!this.name || !this.email || !this.message) {
         alert('All fields are required');
         return;
       }
+      console.log("Button pressed")
     }
   }
 }
