@@ -8,7 +8,7 @@ load_dotenv()
 mongodb_uri = os.getenv('MONGODB_URI')
 
 try:
-    client = MongoClient(mongodb_uri)
+    client = MongoClient(mongodb_uri, tlsAllowInvalidCertificates=True)
     db = client.Authentication
     authed_collection  = db.authed
     print("Connected to the database: ", mongodb_uri)

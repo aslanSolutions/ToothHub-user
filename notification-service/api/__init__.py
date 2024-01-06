@@ -4,7 +4,7 @@ from .mqtt import mqtt_client
 
 
 
-brokerAdress = "0169ad6feac84c25b5b11b5157be1bd8.s2.eu.hivemq.cloud"
+brokerAdress = "c4b7a7b4b0364596a8da6284142a1155.s2.eu.hivemq.cloud"
 brokerPort = 8883
 flask_app = None
 def create_app():
