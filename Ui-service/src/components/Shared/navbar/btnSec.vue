@@ -2,15 +2,26 @@
   <div>
     <div class="button-container">
       <button @click="goToBook"><i class="fa fa-calendar"></i> Book</button>
-      <button @click="goToLogin"><i class="fa fa-sign-in"></i> Login</button>
+      <div v-if="!getIsLoggedIn" class="button-container">
+        <button @click="goToLogin"><i class="fa fa-sign-in"></i> Login</button>
+      </div>
+      <div v-if="getIsLoggedIn" class="button-container">
+        <button @click="logout"><i class="fa fa-sign-in"></i> Log Out</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'BookingButton',
+  computed:{
+    ...mapGetters(['getIsLoggedIn'])
+  },
   methods: {
+    ...mapActions(['updateIsLoggedIn']),
+    
     goToBook() {
       // Implement the logic to navigate to the booking page
       // For example, using Vue Router:
@@ -21,6 +32,9 @@ export default {
       // For example, using Vue Router:
       this.$router.push('/login');
     },
+    logout() {
+      this.updateIsLoggedIn(false);
+    }
   },
 };
 </script>
