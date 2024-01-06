@@ -4,7 +4,8 @@
 const state = {
     email: '',
     type: '',
-    accessToken: ''
+    accessToken: '',
+    isLoggedIn: false
 };
 
 // Getters
@@ -12,7 +13,8 @@ const state = {
 const getters = {
     getEmail: (state) => state.email,
     getType: (state) => state.type,
-    getAccessToken: (state) => state.accessToken
+    getAccessToken: (state) => state.accessToken,
+    getIsLoggedIn: (state) => state.isLoggedIn
 };
 
 // Mutations
@@ -20,7 +22,8 @@ const getters = {
 const mutations = {
     setEmail: (state, email) => (state.email = email),
     setType: (state, type) => (state.type = type),
-    setAccessToken: (state, accessToken) => (state.accessToken = accessToken)
+    setAccessToken: (state, accessToken) => (state.accessToken = accessToken),
+    setIsLoggedIn: (state, isLoggedIn) => (state.isLoggedIn = isLoggedIn)
 };
 
 // Actions
@@ -34,6 +37,9 @@ const actions = {
     },
     updateAccessToken: ({commit}, accessToken) => {
         commit ('setAccessToken', accessToken)
+    },
+    updateIsLoggedIn: ({commit}, isLoggedIn) => {
+        commit ('setIsLoggedIn', isLoggedIn)
     }
 }
 

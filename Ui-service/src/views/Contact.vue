@@ -1,31 +1,32 @@
-<!--
-* The "ContactUs" component is responsible for displaying the contact information.
--->
 <template>
-    <div class="container">
-        <contactPhoto class="photo"/>
-        <messageBoxNonUser class="message"/>
-        <!--<messageBox v-if="isLoggedIn" class="message"/>-->
-    </div>
+  <div class="container">
+    <contactPhoto class="photo" />
+    <messageBoxNonUser v-if="!getIsLoggedIn" class="message" />
+    <messageBox v-if="getIsLoggedIn" class="message" />
+  </div>
 </template>
 
 <script>
-import contactPhoto from '@/components/Contact/contactInfo.vue'
-import messageBoxNonUser from '@/components/Contact/messageBoxNonUser.vue'
-//import messageBox from '@/components/Contact/messageBox.vue'
-//import { mapState } from 'vuex'
+import contactPhoto from '@/components/Contact/contactInfo.vue';
+import messageBoxNonUser from '@/components/Contact/messageBoxNonUser.vue';
+import messageBox from '@/components/Contact/messageBox.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Contact',
-  //computed: {
-    //...mapState(['isLoggedIn', 'role'])
-  //},
+
+  computed: {
+    ...mapGetters(['getIsLoggedIn', 'getEmail']),
+  },
+  mounted() {
+    console.log(this.getEmail)
+  },
   components: {
     contactPhoto,
-    messageBoxNonUser
-    //messageBox
-  }
-}
+    messageBoxNonUser,
+    messageBox,
+  },
+};
 </script>
 
 <style scoped>
@@ -37,7 +38,7 @@ export default {
   padding-left: 2%;
 }
 
-.message{
+.message {
   margin-top: 20px;
   padding-left: 1rem;
 }
