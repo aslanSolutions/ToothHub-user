@@ -51,10 +51,11 @@ export default {
     this.dentist = this.getEmail;
 
     try {
-      const response = await axios.get('http://127.0.0.1:5002/appointments/', {
-        params: { dentist_email: this.dentist, date: new Date().toISOString().split('T')[0] } // If the backend needs the date
+      const response = await axios.get('http://127.0.0.1:5002/appointments/get_by_date/', {
+        params: { dentist_email: this.dentist, date: new Date().toISOString().split('T')[0] }
       });
       this.appointments = response.data;
+      console.log("Data sent: ", response.data)
     } catch (error) {
       console.error('Error fetching appointments:', error);
     }
