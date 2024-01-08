@@ -3,7 +3,7 @@
         <div class="date-header">{{ selectedDateFormatted }}</div>
         <div v-if="availabilities.length > 0" class="dentists-container">
             <div v-for="(availability, index) in availabilities" :key="index" class="dentist-row">
-                <div class="dentist-email">{{ availability.dentist_email }}</div>
+                <div class="dentist-email"> Dr. {{ availability.dentist_name }}</div>
                 <div v-for="(timeSlot, timeIndex) in availability.time_slots"
                     :key="`${availability.dentist_email}-${timeIndex}`" class="time-slot"
                     :class="{ 'selected': selectedTimeSlot === timeSlot }"
@@ -11,8 +11,8 @@
                     {{ timeSlot.start_time }} - {{ timeSlot.end_time }}
                 </div>
             </div>
-
         </div>
+
         <div v-else class="no-availability-message">
             There are no available times, would you like to make a wishlist for an appointment?
             <div class="wishlist-buttons">
@@ -32,6 +32,7 @@
 import axios from 'axios';
 import { mapGetters } from 'vuex';
 import ErrorPopup from '../Shared/errorPop.vue';
+import { debounce } from 'lodash';
 
 
 export default {
@@ -57,11 +58,13 @@ export default {
     watch: {
         selectedDate(newDate) {
             if (newDate) {
-                this.fetchTimeSlots(newDate);
+                this.debouncedFetchTimeSlots(newDate);
             }
         }
     },
     created() {
+        this.patient = this.getEmail;
+        this.authToken = this.getAccessToken;
         this.fetchTimeSlots(this.selectedDate);
     },
     computed: {
@@ -74,14 +77,9 @@ export default {
         ...mapGetters(['getEmail', 'getAccessToken'])
     },
     mounted() {
-        this.patient = this.getEmail;
-        this.authToken = this.getAccessToken;
-        this.fetchTimeSlots();
-
         setInterval(() => {
-            this.fetchTimeSlots();
-        }, 10000);
-
+            this.fetchTimeSlots(this.selectedDate);
+        }, 10000); // 10 seconds
     },
     methods: {
         applySelection() {
@@ -122,7 +120,6 @@ export default {
                     this.isLoading = false;
                 })
                 .catch(error => {
-                    console.error('Error booking appointment:', error);
                     if (error.response) {
                         console.error('Server response:', error);
                         this.popupMessage = 'Failed to create your appointment, Try later!';
@@ -131,7 +128,9 @@ export default {
                     }
                 });
         },
-
+        debouncedFetchTimeSlots: debounce(function (date) {
+            this.fetchTimeSlots(date);
+        }, 1000),
         closePopup() {
             this.showPopup = false;
             this.popupMessage = '';
@@ -167,8 +166,8 @@ export default {
                     }
                 });
         },
-        fetchTimeSlots() {
-            const formattedDate = this.formatDateToYYYYMMDD(this.selectedDate);
+        fetchTimeSlots(date) {
+            const formattedDate = this.formatDateToYYYYMMDD(date || this.selectedDate);
             const endpoint = `http://127.0.0.1:5004/availability/get_timeslots`;
 
             axios.get(endpoint, {
@@ -177,17 +176,24 @@ export default {
                     booked: false
                 }
             })
-                .then(response => {
+                .then(async response => {
                     if (response.data && response.data.available_slots) {
                         const availableSlots = JSON.parse(response.data.available_slots);
-                        this.availabilities = availableSlots.map(slot => ({
-                            dentist_email: slot.dentist_email,
-                            date: formattedDate,
-                            time_slots: slot.time_slots.map(timeSlot => ({
-                                start_time: this.formatTimeToLocal(timeSlot.start_time),
-                                end_time: this.formatTimeToLocal(timeSlot.end_time)
-                            }))
-                        }));
+
+                        const fetchDentistDetailsPromises = availableSlots.map(async slot => {
+                            const dentistName = await this.getDentistDetails(slot.dentist_email);
+                            return {
+                                dentist_email: slot.dentist_email,
+                                dentist_name: dentistName,
+                                date: formattedDate,
+                                time_slots: slot.time_slots.map(timeSlot => ({
+                                    start_time: this.formatTimeToLocal(timeSlot.start_time),
+                                    end_time: this.formatTimeToLocal(timeSlot.end_time)
+                                }))
+                            };
+                        });
+
+                        this.availabilities = await Promise.all(fetchDentistDetailsPromises);
                     } else {
                         this.availabilities = [];
                     }
@@ -195,7 +201,24 @@ export default {
                 .catch(error => {
                     console.error('Error fetching time slots:', error);
                 });
-        }, convertTo24Hour(time12h) {
+        },
+        async getDentistDetails(dentistEmail) {
+            try {
+                const response = await axios.get(`http://127.0.0.1:5000/dentist/${dentistEmail}`);
+
+                if ('name' in response.data) {
+                    const dentistName = response.data.name;
+                    return dentistName;
+                } else {
+                    console.error('Error: Name property not found in the response data');
+                    return 'Unknown Dentist';
+                }
+            } catch (error) {
+                console.error(`Error fetching dentist name for email ${dentistEmail}:`, error);
+                return 'Unknown Dentist';
+            }
+        },
+        convertTo24Hour(time12h) {
             const [time, modifier] = time12h.split(' ');
             let [hours, minutes] = time.split(':');
             if (hours === '12') {

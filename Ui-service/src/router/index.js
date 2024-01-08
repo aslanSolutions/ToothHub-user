@@ -13,7 +13,7 @@ import Dentists from '../views/Dentists.vue';
 import Patients from '../views/Patients.vue';
 import Revenue from '../views/Revenue.vue';
 import PProfile from '../views/Patient/PProfile.vue';
-import PAppointments from '../views/Patient/PAppointments.vue';
+import PAppointments from '@/components/patinet/PAppointments.vue';
 import Home from '../views/Home.vue';
 import Login from '@/components/Shared/LoginForm.vue';
 import Register from '@/components/patinet/RegistrationForm.vue';
@@ -157,11 +157,13 @@ const routes = [
     },
   },
   {
-    path: '/PAppointments',
+    path: '/p-appointments',
     name: 'PAppointments',
+    meta: { requiresAuth: true, type: 'Patient' },
     components: {
       default: PAppointments,
-      Sidebar: PSidebar
+      navbar: Navbar,
+      footer: footer
     },
   },
   {
