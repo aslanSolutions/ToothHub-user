@@ -47,8 +47,9 @@ const routes = [
     name: 'Patient-Dashboard',
     meta: { requiresAuth: true, type: 'Patient', isDashboard: true },
     components: {
-      default: PDashboard,
-      Sidebar: PSidebar
+      default:PDashboard,
+      navbar: Navbar,
+      footer: footer
     }
   },
   {

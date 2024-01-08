@@ -10,7 +10,6 @@ def create_notification(data):
     """Create a notification"""
     try:
         data["created_at"] = datetime.utcnow()
-        print("Step 3")
         with app.app_context():
             send_email(app, data)
         result = notification.insert_one(data)
@@ -23,17 +22,14 @@ def create_notification(data):
 def send_email(app, data):
 
     with app.app_context():
-        # Format the datetime object
         appointment_datetime_str = data['appointment_datetime']
         parsed_datetime = datetime.fromisoformat(appointment_datetime_str)
         formatted_datetime = parsed_datetime.strftime(
             '%a, %d %b %Y %H:%M:%S GMT')
         try:
 
-            # Create a message object
             msg = Message()
 
-            # Set the subject, recipients, and body of the email based on the data
             if data['topic'] == 'booking/create':
                 msg.subject = 'Appointment Scheduled'
                 msg.recipients = [data['dentist_email'], data['patient_email']]
@@ -68,7 +64,6 @@ def send_email(app, data):
                     msg.body = "You have a new notification."
                     mail.send(msg)
             else:
-                # Handle other cases or set a default case
                 msg.subject = 'Notification'
                 msg.recipients = [data['patient_email']]
                 msg.body = "You have a new notification."

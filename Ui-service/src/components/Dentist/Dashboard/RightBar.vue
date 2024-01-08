@@ -1,26 +1,19 @@
 <template>
   <div class="right-sidebar">
     <div class="rightIcons-container">
-      <div class="logOut">
-        <h1 class="h1LogOut">Log Out</h1>
+      <div class="logOut" @click="logout">
         <div class="logout-container">
           <img src="../../../assets/Logout.png" alt="Logout Icon" class="icon-img" />
+          <button class="logout-btn">Log Out</button>
         </div>
-      </div>
-    </div>
-    <div class="girl-ellipse-container">
-      <div class="girl-ellipse">
-        <img src="../../../assets/girlimage.png" alt="girl Image" class="girl-img" />
-        <p class="person-name">Dr. Sarah</p>
       </div>
     </div>
     <div class="Latest-Patient">
       <div class="latest-patient-heading">
         <h2>Latest Patient</h2>
       </div>
-      <br>
       <div class="view-patient-heading">
-        <h2>View All</h2>
+        <button class="view-all-btn" @click="viewAllPatients">View All</button>
       </div>
     </div>
     <div class="man-ellipse-container">
@@ -41,35 +34,39 @@
     </div>
 
     <div class="Patient-Information">
-     </div>
+    </div>
   </div>
 </template>
 
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   methods: {
+    ...mapActions(['resetVuexState']),
     logout() {
-      console.log("Logging out...");
+      this.resetVuexState();
+      this.$router.push('/');
     },
     viewAllPatients() {
       console.log("Viewing all patients...");
-  },
-}
+    },
+  }
 };
 </script>
 
 <style lang="scss" scoped>
-
-
-.girl-img{
+.girl-img {
   width: 10rem;
 }
-.person-text{
+
+.person-text {
   display: flex;
   flex-direction: row;
   color: white;
 }
+
 .right-sidebar {
   width: 30rem;
   background: rgba(28, 53, 64, 0.56);
@@ -84,17 +81,32 @@ export default {
   justify-content: space-between;
 }
 
-.h1LogOut {
+.logout-btn {
   font-family: 'Inter';
   font-weight: 500;
   color: #ffffff;
-  margin-right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s;
 }
 
-.icon-container {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+.logout-btn:hover {
+  color: rgb(29, 107, 115);
+}
+
+.view-all-btn {
+  font-family: 'Inter';
+  font-weight: 500;
+  color: #ffffff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.view-all-btn:hover {
+  color: rgb(29, 107, 115);
 }
 
 .icon-img {

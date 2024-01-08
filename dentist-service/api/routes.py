@@ -54,16 +54,17 @@ def register_dentist():
         return jsonify({"message": "An error occurred"}), 500
     
 
-@bp.route('/<int:dentist_id>', methods=['GET'])
-@response(dentistSchema, 200)
-def get_dentist(dentist_id):
-    # Retrieve a dentist by ID
-    dentist = users.find_one({'_id': dentist_id})
+@bp.route('/<email>', methods=['GET'])
+def get_dentist(email):
+    schema = DentistSchema()
+    dentist = users.find_one({'email': email})
 
     if dentist:
-        return dentist
+        serialized_dentist = schema.dump(dentist)
+        return jsonify(serialized_dentist), 200
     else:
-        return jsonify({"message": f"No dentist found with ID {dentist_id}"}), 404
+        return jsonify({"message": f"No dentist found with email {email}"}), 404
+
 
 @bp.route('/', methods=['POST'])
 @response(dentistSchema, 201)
