@@ -1,19 +1,21 @@
-import os
 from pymongo import MongoClient
+import os
 from dotenv import load_dotenv
+from .config import get_config
 
 load_dotenv()
+config = get_config()
 
 # Retrieve MongoDB URI from environment variable
-mongodb_uri = os.getenv('MONGODB_URI')
+mongodb_uri = config.DATABASE_URI
 
 
 try:
     client = MongoClient(mongodb_uri)
+    print(mongodb_uri)
     db = client.Dentists
     users = db.users
     services = db.services
-    about = db.about
     clinic = db.clinic
     print("Connected to the database.")
 except Exception as e:

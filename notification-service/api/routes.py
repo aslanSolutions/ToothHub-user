@@ -25,11 +25,11 @@ def post_notification(data):
         data["created_at"] = datetime.utcnow()
         with app.app_context():
             from .util import send_email
-            send_email(data)
+            send_email(app ,data)
         result = notification.insert_one(data)
         return data
     except Exception as e:
-        return {'Error': e}, 501
+        print( {'Error': e}, 501)
 
 @bp.route('/<notification_id>', methods=['GET'])
 @response(notification_schema,200)

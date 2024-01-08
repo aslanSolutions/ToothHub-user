@@ -1,5 +1,12 @@
 from pymongo import MongoClient
+import os
+from dotenv import load_dotenv
+from .config import get_config
 
-client = MongoClient('mongodb+srv://aslan:aslan@aslan.im1wsjq.mongodb.net/', 27017)
+config = get_config()
+load_dotenv()
+
+print("Connected to database: ", config.DATABASE_URI)
+client = MongoClient(config.DATABASE_URI)
 db = client.Notification
 notification = db.notification

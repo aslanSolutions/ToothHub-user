@@ -89,7 +89,8 @@ def create_dentist():
 @response(dentistSchema, 200)
 def get_all_dentist():
     all_dentists = list(dentist_collection.find({}))
-    return all_dentists
+    schema = DentistSchema(many=True)
+    return jsonify(schema.dump(all_dentists)), 200
 
 
 @bp.route('/<int:dentist_id>', methods=['PATCH'])
