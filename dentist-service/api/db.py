@@ -3,15 +3,16 @@ import os
 from dotenv import load_dotenv
 from .config import get_config
 
-config = get_config()
 load_dotenv()
+config = get_config()
 
 # Retrieve MongoDB URI from environment variable
-mongodb_uri = os.getenv(config.DATABASE_URI)
+mongodb_uri = config.DATABASE_URI
 
 
 try:
     client = MongoClient(mongodb_uri)
+    print(mongodb_uri)
     db = client.Dentists
     users = db.users
     services = db.services
