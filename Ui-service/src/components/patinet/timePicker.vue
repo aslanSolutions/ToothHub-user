@@ -21,20 +21,26 @@
             </div>
         </div>
         <div v-if="selectedTimeSlot" class="buttons-container">
-            <button class="cancel-btn" @click="cancelSelection">Cancel</button>
-            <button class="apply-btn" @click="applySelection">Apply</button>
+            <button :disabled="isLoading" class="cancel-btn" @click="cancelSelection">Cancel</button>
+            <button :disabled="isLoading" class="apply-btn" @click="applySelection">Apply</button>
         </div>
+        <error-popup :errorMessage="popupMessage" :showPopup="showPopup" @closePopup="closePopup" />
     </div>
 </template>
   
 <script>
 import axios from 'axios';
 import { mapGetters } from 'vuex';
+import ErrorPopup from '../Shared/errorPop.vue';
 
 
 export default {
     props: {
-        selectedDate: Date
+        selectedDate: Date,
+        selectedClinic: String
+    },
+    components: {
+        ErrorPopup
     },
     data() {
         return {
@@ -42,7 +48,10 @@ export default {
             selectedTimeSlot: null,
             selectedDentistEmail: '',
             patient: '',
-            authToken: ''
+            authToken: '',
+            showPopup: false,
+            popupMessage: '',
+            isLoading: false,
         };
     },
     watch: {
@@ -66,15 +75,30 @@ export default {
     },
     mounted() {
         this.patient = this.getEmail;
-        this.authToken = this.getAccessToken
+        this.authToken = this.getAccessToken;
+        this.fetchTimeSlots();
+
+        setInterval(() => {
+            this.fetchTimeSlots();
+        }, 10000);
+
     },
     methods: {
         applySelection() {
+            if (this.isLoading) {
+                return;
+            }
             if (!this.selectedTimeSlot || !this.selectedDentistEmail) {
                 alert("Please select a time slot.");
                 return;
             }
-            console.log("Selected date:", this.selectedDate)
+            if (!this.selectedClinic) {
+                alert("Please select a clinic from the map")
+                return;
+            }
+
+            this.isLoading = true;
+
             const selectedDateStr = `${this.selectedDate.getFullYear()}-${(this.selectedDate.getMonth() + 1).toString().padStart(2, '0')}-${this.selectedDate.getDate().toString().padStart(2, '0')}`;
             const time24h = this.convertTo24Hour(this.selectedTimeSlot.start_time);
 
@@ -82,6 +106,7 @@ export default {
             const bookingPayload = {
                 patient_email: this.patient,
                 dentist_email: this.selectedDentistEmail,
+                clinic: this.selectedClinic,
                 appointment_datetime: appointmentDateTime
             };
             console.log("Sent date:", bookingPayload)
@@ -91,15 +116,27 @@ export default {
                     'Content-Type': 'application/json'
                 }
             })
-                .then(response => {
-                    console.log('Appointment booked successfully:', response.data);
+                .then(() => {
+                    this.popupMessage = 'Your appointment created successfully.';
+                    this.showPopup = true;
+                    this.isLoading = false;
                 })
                 .catch(error => {
                     console.error('Error booking appointment:', error);
                     if (error.response) {
-                        console.error('Server response:', error.response.data);
+                        console.error('Server response:', error);
+                        this.popupMessage = 'Failed to create your appointment, Try later!';
+                        this.showPopup = true;
+                        this.isLoading = false;
                     }
                 });
+        },
+
+        closePopup() {
+            this.showPopup = false;
+            this.popupMessage = '';
+            this.selectedTimeSlot = null;
+            this.fetchTimeSlots();
         },
         addToWishlist() {
             const payload = {
@@ -113,8 +150,15 @@ export default {
                     'Authorization': `Bearer ${this.authToken}`
                 }
             })
-                .then(response => {
-                    console.log('Wishlist entry created:', response);
+                .then(() => {
+                    this.popupMessage =
+                        'You added a new wished date for a new appointment.';
+                    this.showPopup = true;
+
+                    setTimeout(() => {
+                        this.showPopup = false;
+                        this.popupMessage = '';
+                    }, 5000);
                 })
                 .catch(error => {
                     console.error('Error creating wishlist entry:', error);
@@ -122,7 +166,8 @@ export default {
                         console.error('Server response:', error.response.data);
                     }
                 });
-        }, fetchTimeSlots() {
+        },
+        fetchTimeSlots() {
             const formattedDate = this.formatDateToYYYYMMDD(this.selectedDate);
             const endpoint = `http://127.0.0.1:5004/availability/get_timeslots`;
 

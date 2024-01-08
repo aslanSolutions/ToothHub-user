@@ -1,8 +1,12 @@
 <template>
-  <vue-cal :events="events" ref="calendar" id="cal" :time-from="8 * 60" :time-to="18 * 60" :time-step="30"
-    :disable-views="['years', 'year']" hide-weekends @event-drag-create="onDragCreate"
-    :editable-events="{ title: false, drag: true, resize: true, delete: true, create: true }"
-    :drag-to-create-threshold="0" @event-drop="handleEventDrop" @event-resize="handleEventResize"></vue-cal>
+  <div>
+    <vue-cal :events="events" ref="calendar" id="cal" :time-from="8 * 60" :time-to="18 * 60" :time-step="30"
+      :disable-views="['years', 'year']" hide-weekends @event-drag-create="onDragCreate"
+      :editable-events="{ title: false, drag: true, resize: true, delete: true, create: true }"
+      :drag-to-create-threshold="0" @event-drop="handleEventDrop" @event-resize="handleEventResize"></vue-cal>
+
+    <error-popup :errorMessage="popupMessage" :showPopup="showPopup" @closePopup="closePopup" />
+  </div>
 </template>
 
 <script>
@@ -10,11 +14,13 @@ import VueCal from 'vue-cal';
 import 'vue-cal/dist/vuecal.css';
 import axios from 'axios';
 import { mapGetters } from 'vuex';
+import ErrorPopup from '../../Shared/errorPop.vue';
 
 export default {
   name: 'Calendar',
   components: {
-    VueCal
+    VueCal,
+    ErrorPopup
   },
   computed: {
     ...mapGetters(['getEmail'])
@@ -24,7 +30,9 @@ export default {
       events: [],
       selectedTimeSlots: [],
       selectedDate: null,
-      dentist: ''
+      dentist: '',
+      popupMessage: '',
+      showPopup: false,
     };
   },
   methods: {
@@ -92,18 +100,24 @@ export default {
       console.log("Generated Time Slots:", timeSlots);
 
       try {
-        const response = await axios.post('http://127.0.0.1:5004/availability/', {
+          await axios.post('http://127.0.0.1:5004/availability/', {
           dentist_email: dentistEmail,
           date: formattedDate,
           time_slots: timeSlots
         });
 
-        console.log(response);
+        this.popupMessage = 'You sat new timeslots successfully!';
+        this.showPopup = true;  
 
       } catch (error) {
-        console.error('Error setting availability:', error.response ? error.response.data : error);
-        this.showErrorToUser(`Failed to set availability: ${error.response.data.detail || 'Unknown error'}`);
+        this.popupMessage = 'Failed to set availability';
+        this.showPopup = true;
       }
+    },
+    closePopup() {
+      this.showPopup = false;
+      this.popupMessage = '';
+      this.fetchEvents();
     },
     formatDateTimeForBackend(dateTime, dateStr) {
       return `${dateStr}T${dateTime.getHours().toString().padStart(2, '0')}:${dateTime.getMinutes().toString().padStart(2, '0')}:00`;
@@ -148,18 +162,10 @@ export default {
           params: { dentist_email: this.dentist }
         });
 
-        console.log('Availability Response:', availabilityResponse.data);
-        console.log('Appointments Response:', appointmentsResponse.data);
-
         this.events = this.createEventsFromData(
           availabilityResponse.data.availability,
           appointmentsResponse.data
         );
-
-        console.log('Processed Events:', this.createEventsFromData(
-          availabilityResponse.data.availability,
-          appointmentsResponse.data
-        ));
 
       } catch (error) {
         console.error('Error fetching events:', error);
@@ -200,9 +206,11 @@ export default {
   mounted() {
     this.dentist = this.getEmail;
 
-    this.$nextTick(() => {
+    this.fetchEvents();
+
+    setInterval(() => {
       this.fetchEvents();
-    });
+    }, 10000);
   }
 };
 </script>

@@ -11,7 +11,7 @@
     import headSec from '@/components/Shared/home/headSection.vue'
     import servicePhoto from '@/components/Shared/home/servicePhoto.vue'
     import whoAreWeSec from '@/components/Shared/home/whoAreWeSec.vue'
-    import dentistMap from '@/components/map.vue'
+    import dentistMap from '@/components/Shared/map.vue'
 
     export default {
         components: {

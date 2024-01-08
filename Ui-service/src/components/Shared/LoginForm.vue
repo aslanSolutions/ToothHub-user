@@ -32,21 +32,28 @@
 
                 </form>
             </div>
+            <ErrorPopup :errorMessage="loginError" :showPopup="showPopup" @closePopup="closePopup" />
         </div>
     </div>
 </template>
    
 <script>
 import axios from 'axios';
-import { mapActions } from 'vuex'; // Import Vuex mapActions
+import { mapActions } from 'vuex';
+import ErrorPopup from './errorPop.vue';
 
 export default {
     name: 'UserLogin',
     data() {
         return {
             email: '',
-            password: ''
+            password: '',
+            loginError: '',
+            showPopup: false
         };
+    },
+    components: {
+        ErrorPopup
     },
     methods: {
         ...mapActions(['updateEmail', 'updateType', 'updateAccessToken', 'updateIsLoggedIn']),
@@ -55,13 +62,17 @@ export default {
             try {
                 const response = await axios.post('http://127.0.0.1:5005/auth/login', {
                     email: this.email,
-                    password: this.password
+                    password: this.password,
                 });
-               if (response.data && response.data.access_token) {
+
+                if (response.data && response.data.access_token) {
                     this.updateEmail(response.data.user.email);
-                    this.updateType(response.data.user.type); 
+                    this.updateType(response.data.user.type);
                     this.updateAccessToken(response.data.access_token);
                     this.updateIsLoggedIn(true);
+
+                    // Reset the login error on successful login
+                    this.loginError = '';
 
                     if (response.data.user.type === 'Patient') {
                         this.$router.push('/');
@@ -72,9 +83,15 @@ export default {
                     console.error('Invalid login response format');
                 }
             } catch (error) {
-                console.error(error);
-                // Handle error (e.g., show error message)
+                console.error("Error:", error);
+                this.loginError = 'Invalid login credentials';
+                this.showPopup = true;
+                console.log("Pop: ", this.showPopup);
             }
+        },
+        closePopup() {
+            this.showPopup = false;
+            this.password = '';
         }
     }
 }

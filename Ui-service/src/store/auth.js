@@ -40,7 +40,13 @@ const actions = {
     },
     updateIsLoggedIn: ({commit}, isLoggedIn) => {
         commit ('setIsLoggedIn', isLoggedIn)
-    }
+    },
+    resetVuexState: ({ commit }) => {
+        commit('setEmail', '');
+        commit('setType', '');
+        commit('setAccessToken', '');
+        commit('setIsLoggedIn', false);
+      },
 }
 
 export default {

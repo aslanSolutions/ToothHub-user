@@ -6,7 +6,7 @@
         <button @click="goToLogin"><i class="fa fa-sign-in"></i> Login</button>
       </div>
       <div v-if="getIsLoggedIn" class="button-container">
-        <button @click="logout"><i class="fa fa-sign-in"></i> Log Out</button>
+        <button @click="logout"><i class="fa fa-sign-out"></i> Logout</button>
       </div>
     </div>
   </div>
@@ -19,29 +19,27 @@ export default {
   computed:{
     ...mapGetters(['getIsLoggedIn'])
   },
-  methods: {
-    ...mapActions(['updateIsLoggedIn']),
-    
+  methods: {  
+    ...mapActions(['resetVuexState']),
+
     goToBook() {
-      // Implement the logic to navigate to the booking page
-      // For example, using Vue Router:
-      this.$router.push('/book');
+      this.$router.push('/patient-dashboard');
     },
     goToLogin() {
-      // Implement the logic to navigate to the login page
-      // For example, using Vue Router:
       this.$router.push('/login');
     },
     logout() {
-      this.updateIsLoggedIn(false);
-    }
+      this.resetVuexState();
+      this.$router.push('/');
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .button-container {
-  display: flex; /* Make the buttons appear next to each other */
+  display: flex;
+  /* Make the buttons appear next to each other */
   gap: 2rem;
 }
 
