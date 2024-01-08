@@ -20,7 +20,7 @@
           <li><router-link class="link" active-class="active-class" :to="{ name: 'About' }">About Us</router-link></li>
           <li><router-link class="link" active-class="active-class" :to="{ name: 'Service' }">Services</router-link></li>
           <li><router-link class="link" active-class="active-class" :to="{ name: 'Contact' }">Contact</router-link></li>
-          <li><router-link class="link" active-class="active-class" :to="{ name: 'Home' }">Appointment</router-link></li>
+          <li><router-link class="link" active-class="active-class" :to="{ name: 'PAppointments' }">Appointment</router-link></li>
         </ul>
       </nav>
 
