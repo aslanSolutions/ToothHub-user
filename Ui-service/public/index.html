@@ -11,6 +11,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons"
     rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script>
+      function reloadPage(endpoint) {
+          $.ajax({
+              url: endpoint,
+              type: 'GET',
+              success: function (data) {
+                  // Update the content on the page with the new data
+                  // For example, if you have a container with an ID 'content'
+                  $('#content').html(data);
+              },
+              error: function (error) {
+                  console.error('Error reloading page:', error);
+              }
+          });
+      }
+
+      // Call the function with different endpoints based on your requirements
+      $(document).ready(function () {
+          // Reload page based on endpoint 1
+          reloadPage('/endpoint1');
+
+          // Reload page based on endpoint 2 after a delay of 5 seconds
+          setTimeout(function () {
+              reloadPage('/endpoint2');
+          }, 5000);
+      });
+    </script>
   </head>
   <body>
     <noscript>

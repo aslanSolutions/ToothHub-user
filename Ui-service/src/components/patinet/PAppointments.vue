@@ -23,7 +23,9 @@
             <p> Clinic: {{ appointment.clinic }}</p>
             <p> Dentist: Dr. {{ appointment.dentistName }}</p>
             <p> Status: Upcoming</p>
+            <button class="delete-button" @click="deleteAppointment(appointment._id)">🗑️</button>
           </div>
+
         </div>
 
         <div class="done-appointments">
@@ -31,7 +33,7 @@
           <div class="appointment-card" v-for="appointment in doneAppointments" :key="appointment._id">
             <p> Date: {{ appointment.appointment_datetime }}</p>
             <p> Clinic: {{ appointment.clinic }}</p>
-            <p> Dentist: Dr. {{ appointment.dentistName}}</p>
+            <p> Dentist: Dr. {{ appointment.dentistName }}</p>
             <p> Status: Done</p>
           </div>
         </div>
@@ -67,6 +69,19 @@ export default {
     updateDate() {
       const now = new Date();
       this.currentDate = now.toLocaleString();
+    },
+    async deleteAppointment(appointmentId) {
+      try {
+        const response = await axios.delete(`http://127.0.0.1:5002/appointments/${appointmentId}`);
+        console.log('Delete Response:', response);
+        if (response.status === 200) {
+          this.upcomingAppointments = this.upcomingAppointments.filter(appointment => appointment._id !== appointmentId);
+        } else {
+          console.error('Error deleting appointment:', response.data.message);
+        }
+      } catch (error) {
+        console.error('Error deleting appointment:', error);
+      }
     },
     async fetchAppointments() {
       try {
@@ -154,6 +169,18 @@ h3 {
 
 p {
   margin: 8px 0;
+}
+
+.delete-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: red;
+}
+
+.delete-button:hover {
+  color: darkred;
 }
 </style>
   
