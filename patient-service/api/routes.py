@@ -74,6 +74,17 @@ def get_all_patient():
     all_patinets = list(patient_collection.find({}))
     return all_patinets
 
+@bp.route('/<email>', methods=['GET'])
+def get_patient_email(email):
+    schema = PatientSchema()
+    patient = users.find_one({'email': email})
+
+    if patient:
+        serialized_patient = schema.dump(patient)
+        return jsonify(serialized_patient), 200
+    else:
+        return jsonify({"message": f"No patinet found with email {email}"}), 404
+
 
 @bp.route('/<int:patient_id>', methods=['PATCH'])
 @response(patientSchema, 200)

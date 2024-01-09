@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-
+load_dotenv()
 
 
 class Config:
@@ -36,7 +36,6 @@ class ProductionConfig(Config):
 
 
 def get_config():
-    load_dotenv()
     envi = os.environ.get('FLASK_ENV', 'development')
     if envi == 'production':
         return ProductionConfig

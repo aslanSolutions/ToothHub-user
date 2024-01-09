@@ -16,7 +16,6 @@ def on_message(client, userdata, msg):
     with flask_app.app_context():
         try:
             decoded_payload = msg.payload.decode("utf-8")
-            print("Decoded Payload:", decoded_payload)
 
             # First parse: Should give you a string if double-encoded
             intermediate_payload = json.loads(decoded_payload)

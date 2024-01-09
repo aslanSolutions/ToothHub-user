@@ -4,7 +4,7 @@ import store from '../store';
 
 // Dashboard of users
 import DDashboard from '../views/Dentist/DDashboard.vue';
-import DAppointments from '../views/Dentist/DAppointments.vue'
+import DAppointments from '@/components/Dentist/Dashboard/DAppointments.vue';
 import PDashboard from '../views/Patient/Dashboard.vue';
 import Dashboard from '../views/Dashboard.vue';
 
@@ -103,7 +103,7 @@ const routes = [
     components: {
       default: DAppointments,
       Sidebar: Dsidebar,
-      footer: footer
+      Rightbar: RightSidebar
     },
   },
   {
