@@ -18,14 +18,6 @@
         <img src="../../../assets/AppIcon1.png" alt="Appointments Icon" class="icon-img" />
         <router-link class="link" active-class="active-class" exact :to="{ name: 'DAppointments' }">Appointments</router-link>
       </div>
-      <div class="icon">
-        <img src="../../../assets/SetIcon1.png" alt="Settings Icon" class="icon-img" />
-        <router-link class="link" active-class="active-class" exact :to="{ name: 'Services' }">Services</router-link>
-      </div>
-      <div class="icon">
-        <img src="../../../assets/SetIcon1.png" alt="Settings Icon" class="icon-img" />
-        <router-link class="link" active-class="active-class" exact :to="{ name: 'PProfile' }">Profile</router-link>
-      </div>
     </div>
   </div>
 </template>
