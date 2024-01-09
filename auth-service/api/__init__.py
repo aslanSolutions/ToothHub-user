@@ -4,7 +4,8 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from .routes import auth_blueprint
 from dotenv import load_dotenv
-from datetime import timedelta
+from .config import get_config
+
 
 # Global set to store revoked token identifiers (JWT ID or JTI)
 revoked_tokens = set()
@@ -13,10 +14,8 @@ def create_app():
     app = Flask(__name__)
     
     load_dotenv()
-    
     CORS(app)
-    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=5)
+    app.config.from_object(get_config())
 
     jwt = JWTManager(app)
 
