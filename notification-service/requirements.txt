@@ -8,3 +8,4 @@ paho-mqtt==1.5.1
 marshmallow-enum==1.5.1
 pymongo==4.6.1
 Flask-Mail==0.9.1
+python-dotenv==1.0.0
